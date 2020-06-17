@@ -10,8 +10,8 @@ import numpy as np
 #   P - Padding
 #   S - Stride
 
-#minimum image size is 256x256 otherwise max_pooling will crash
-#Will need to remove conv layers or remove their max_pooling
+# Minimum image size is 256x256 otherwise max_pooling will crash
+# Will need to remove conv layers or remove their max_pooling
 
 class Discriminator(nn.Module):
 
