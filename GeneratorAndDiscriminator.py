@@ -10,7 +10,7 @@ import numpy as np
 #   P - Padding
 #   S - Stride
 
-# Minimum image size is 256x256 otherwise max_pooling will crash
+# Minimum image size is 64x64 otherwise max_pooling will crash
 # Will need to remove conv layers or remove their max_pooling
 
 class Discriminator(nn.Module):
@@ -36,8 +36,10 @@ class Discriminator(nn.Module):
         x = F.max_pool2d(F.relu(self.conv1(x)), max_pool)
         x = F.max_pool2d(F.relu(self.conv2(x)), max_pool)
         x = F.max_pool2d(F.relu(self.conv3(x)), max_pool)
-        x = F.max_pool2d(F.relu(self.conv4(x)), max_pool)
-        x = F.relu(self.conv5(x))
+        if min(image_dimensions) >= 256:
+            x = F.max_pool2d(F.relu(self.conv4(x)), max_pool)
+        if min(image_dimensions) >= 1024:
+            x = F.max_pool2d(F.relu(self.conv5(x)), max_pool)
 
         if self._linear_dim is None:
             self._linear_dim = np.prod(x[0].shape)
@@ -56,7 +58,7 @@ class Discriminator(nn.Module):
 #THESE VALUES FOR TESTING. REMOVE THEM
 features_d = 64
 kernel_size = 3
-image_dimensions = (256, 256)
+image_dimensions = (128, 128)
 max_pool = (2,2)
 x = torch.rand(image_dimensions).view(-1, 1, image_dimensions[0], image_dimensions[1])
 
