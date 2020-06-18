@@ -26,7 +26,7 @@ class Discriminator(nn.Module):
         self.conv4 = nn.Conv2d(features_d * 4, features_d * 8, kernel_size, stride=2, padding=1)
         self.conv5 = nn.Conv2d(features_d * 8, 1, kernel_size, stride=2, padding=1)
 
-        fake_data = torch.rand(image_dimensions).view(-1, 3, image_dimensions[0], image_dimensions[1])
+        fake_data = torch.rand(image_dimensions).view(-1, image_dimensions[2], image_dimensions[0], image_dimensions[1])
         self.conv(fake_data)
         
         self.dense1 = nn.Linear(self._linear_dim, 512)
@@ -71,7 +71,7 @@ class Generator(nn.Module):
         self.conv6 = nn.ConvTranspose2d(features_g * 2, features_g, kernel_size, stride=2, padding=1)
 
 
-        fake_data = torch.rand(image_dimensions).view(-1, 3, cartoon_dimensions[0], cartoon_dimensions[1])
+        fake_data = torch.rand(cartoon_dimensions).view(-1, cartoon_dimensions[2], cartoon_dimensions[0], cartoon_dimensions[1])
         self.conv(fake_data)
 
         self.dense1 = nn.Linear(self._linear_dim, (image_dimensions[0] * image_dimensions[1] * image_dimensions[2])//2)
@@ -110,10 +110,9 @@ print(disciminator(x))
 
 
 features_g = 2
-cartoon_dimensions = (32, 32)
-y = torch.rand(image_dimensions).view(-1, 3, cartoon_dimensions[0], cartoon_dimensions[1])
+cartoon_dimensions = (128, 128, 3)
+y = torch.rand(cartoon_dimensions).view(-1, cartoon_dimensions[2], cartoon_dimensions[0], cartoon_dimensions[1])
 generator = Generator(features_g, kernel_size)
 y = generator(y).view(-1, image_dimensions[0], image_dimensions[1], image_dimensions[2])
-print(y)
 print(y.shape)
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
