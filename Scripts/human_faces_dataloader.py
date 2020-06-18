@@ -26,7 +26,7 @@ class HumanFaceDataset(Dataset):
         image = np.moveaxis(image,-1,0)
         return image
 
-def get_data_loader(args,train = True, transform = None):
+def get_data_loader(args, train = True, transform = None):
     txtpath = args.human_face_train if train else args.human_face_test
     data_set = HumanFaceDataset(txtpath, args.root_dir_human_faces, transform)
     dataloader = DataLoader(data_set, batch_size=args.batch_size, shuffle=True)
