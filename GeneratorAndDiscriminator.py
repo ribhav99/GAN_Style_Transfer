@@ -93,8 +93,6 @@ class Generator(nn.Module):
     def forward(self, x):
         x = self.conv(x)
         x = x.view(-1, self._linear_dim)
-        print(x.shape)
-        print(self._linear_dim)
         x = F.relu(self.dense1(x))
         x = F.relu(self.dense2(x))
         return x
@@ -116,4 +114,6 @@ cartoon_dimensions = (32, 32)
 y = torch.rand(image_dimensions).view(-1, 1, cartoon_dimensions[0], cartoon_dimensions[1])
 generator = Generator(features_g, kernel_size)
 y = generator(y).view(-1, image_dimensions[0], image_dimensions[1])
+print(y)
+print(y.shape)
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
