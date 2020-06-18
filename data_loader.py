@@ -10,7 +10,6 @@ cartoon_data = []
 
 human_faces_data_directory = ""
 cartoon_data_directory = ""
-download_directory = ""
 
 image_dimensions = (256, 256)
 cartoon_dimensions = (32, 32)
