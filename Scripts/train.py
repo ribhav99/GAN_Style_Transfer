@@ -5,9 +5,8 @@ from GeneratorAndDiscriminator import Generator, Discriminator
 from dataloader import get_data_loader
 from tqdm import tqdm, trange
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 def train(args):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #LOAD DATA .......
     full_data = get_data_loader(args, train = True)
 
