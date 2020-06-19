@@ -7,6 +7,7 @@ from tqdm import tqdm, trange
 
 def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
     #LOAD DATA .......
     full_data = get_data_loader(args, train = True)
 
