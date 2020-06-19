@@ -12,13 +12,13 @@ def train(args):
     full_data = get_data_loader(args, train = True)
 
     loss_function = nn.BCELoss()
-    disciminator = Discriminator(args.image_dimensions, args.features_d, args.kernel_size).to(device)
+    discriminator = Discriminator(args.image_dimensions, args.features_d, args.kernel_size).to(device)
     generator = Generator(args.cartoon_dimensions, args.image_dimensions, args.features_g, args.kernel_size).to(device)
 
     optimiser_d = optim.Adam(disciminator.parameters(), lr=args.learning_rate)
     optimiser_g = optim.Adam(generator.parameters(), lr=args.learning_rate)
 
-    disciminator.train()
+    discriminator.train()
     generator.train()
 
     print("Start Training....")
@@ -32,7 +32,7 @@ def train(args):
             #Discriminator: max log(D(x)) + log(1 - D(G(z)))
             optimiser_d.zero_grad()
             labels = torch.ones(args.batch_size, device = device)
-            output_d = disciminator(human_faces).reshape(-1)
+            output_d = discriminator(human_faces).reshape(-1)
             loss_d_real = loss_function(output_d, labels)
             
             fake = generator(cartoon_faces)
