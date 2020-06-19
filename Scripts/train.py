@@ -22,7 +22,7 @@ def train(args):
     generator.train()
 
     print("Start Training....")
-    for epoch in trange(num_epochs):
+    for epoch in trange(args.num_epochs):
         for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
 
