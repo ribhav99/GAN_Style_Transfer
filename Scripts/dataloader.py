@@ -8,7 +8,9 @@ class GANDataset(Dataset):
     """
     Dataset for human faces, must do the train test split before and call
     torch.tensor on its outputs, the channels are flipped already.
-    Data from: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+
+    Human faces data from: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+    Cartoon data from: https://google.github.io/cartoonset/
     """
     def __init__(self,txtfilepath,root_dir, transform = None):
         self.dir = root_dir
