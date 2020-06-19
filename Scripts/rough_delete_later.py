@@ -10,7 +10,7 @@ def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     #LOAD DATA .......
-    full_data = get_data_loader(args, train = True)
+    # full_data = get_data_loader(args, train = True)
 
     loss_function = nn.BCELoss()
     discriminator = Discriminator(args.image_dimensions, args.features_d, args.kernel_size).to(device)
@@ -24,38 +24,40 @@ def train(args):
 
     print("Start Training....")
     for epoch in trange(args.num_epochs):
-        for batch_num, data in enumerate(full_data):
-            human_faces, cartoon_faces = data
+        # for batch_num, data in enumerate(full_data):
+        # human_faces, cartoon_faces = data
+        human_faces = torch.rand(args.image_dimensions).view(-1, 3, args.image_dimensions[0], args.image_dimensions[1])
+        cartoon_faces = torch.rand(args.cartoon_dimensions).view(-1, args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
 
-            #Discriminator: max log(D(x)) + log(1 - D(G(z)))
-            optimiser_d.zero_grad()
-            labels = torch.ones(args.batch_size, device = device)
-            output_d = discriminator(human_faces).reshape(-1)
-            loss_d_real = loss_function(output_d, labels)
-            
-            fake = generator(cartoon_faces).view(-1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
-            labels = torch.zeros(args.batch_size, device = device)
+        #Discriminator: max log(D(x)) + log(1 - D(G(z)))
+        optimiser_d.zero_grad()
+        labels = torch.ones(args.batch_size, device = device)
+        output_d = discriminator(human_faces).reshape(-1)
+        loss_d_real = loss_function(output_d, labels)
+        
+        fake = generator(cartoon_faces).view(-1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
+        labels = torch.zeros(args.batch_size, device = device)
 
-            output_d = discriminator(fake.detach()).reshape(-1)
-            loss_d_fake = loss_function(output_d, labels)
+        output_d = discriminator(fake.detach()).reshape(-1)
+        loss_d_fake = loss_function(output_d, labels)
 
-            loss_d = loss_d_real + loss_d_fake
-            loss_d.backward()
-            optimiser_d.step()
+        loss_d = loss_d_real + loss_d_fake
+        loss_d.backward()
+        optimiser_d.step()
 
-            #Generator: max log(D(G(z)))
-            optimiser_g.zero_grad()
-            labels = torch.ones(args.batch_size, device = device)
-            output = discriminator(fake).reshape(-1)
-            loss_g = loss_function(output, labels)
-            loss_g.backward()
-            optimiser_g.step()
+        #Generator: max log(D(G(z)))
+        optimiser_g.zero_grad()
+        labels = torch.ones(args.batch_size, device = device)
+        output = discriminator(fake).reshape(-1)
+        loss_g = loss_function(output, labels)
+        loss_g.backward()
+        optimiser_g.step()
 
             #check training progress
             #can do it per batch size or per epoch
             #if per epoch then it comes after this for loop
-            if batch_num % 300 == 0:
-                print("accuracy")
+            # if batch_num % 300 == 0:
+            #     print("accuracy")
     torch.save(discriminator, "disciminator-{}.pt".format(datetime.now()))
     torch.save(generator, "generator-{}.pt".format(datetime.now()))
 
@@ -68,13 +70,13 @@ if __name__ == "__main__":
     args = AttrDict()
     args_dict = {
         'learning_rate': 0.001,
-        'batch_size' : 32,
+        'batch_size' : 1,
         'image_dimensions' : (218, 178, 3), 
         'cartoon_dimensions' : (128, 128, 3),
         'max_pool' : (2, 2),
         'features_d' : 64,
         'features_g' : 2,
-        'num_epochs' : 30,
+        'num_epochs' : 1,
         'kernel_size' : 3,
         'human_train_path' : "../data/human_train.txt",
         'human_test_path' : "../data/human_test.txt",
