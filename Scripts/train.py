@@ -7,10 +7,9 @@ from tqdm import tqdm, trange
 
 def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
     #LOAD DATA .......
     full_data = get_data_loader(args, train = True)
-
 
     loss_function = nn.BCELoss()
     disciminator = Discriminator(args.features_d, args.kernel_size, args.image_dimensions).to(device)
