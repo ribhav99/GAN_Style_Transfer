@@ -1,13 +1,14 @@
+import torch
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 import os
 import pandas as pd
 from skimage import io
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class GANDataset(Dataset):
     """
-    Dataset for human faces, must do the train test split before and call
-    torch.tensor on its outputs, the channels are flipped already.
+    Dataset for human faces and cartoon faces, the channels are flipped already.
 
     Human faces data from: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
     Cartoon data from: https://google.github.io/cartoonset/
@@ -28,7 +29,7 @@ class GANDataset(Dataset):
         if self.transform:
             image = self.transform(image)
         image = np.moveaxis(image,-1,0)
-        return image
+        return torch.from_numpy(image).float().to(device)
 
     def __getitem__(self,idx):
         human_face = self.load(self.human_dir, self.human_array[idx])

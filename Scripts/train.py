@@ -27,9 +27,6 @@ def train(args):
         for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
 
-            human_faces = torch.tensor(human_faces,dtype=torch.float,device=device)
-            cartoon_faces = torch.tensor(cartoon_faces,dtype=torch.float,device=device)
-
             #Discriminator: max log(D(x)) + log(1 - D(G(z)))
             optimiser_d.zero_grad()
             labels = torch.ones(args.batch_size, device = device)
