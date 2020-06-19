@@ -15,7 +15,7 @@ import numpy as np
 
 class Discriminator(nn.Module):
 
-    def __init__(self, features_d, kernel_size, input_dimensions):
+    def __init__(self, input_dimensions, features_d=4, kernel_size=3):
         super().__init__()
         self.input_dimensions = input_dimensions
         self._linear_dim = None
@@ -59,7 +59,7 @@ class Discriminator(nn.Module):
 
 class Generator(nn.Module):
 
-    def __init__(self, features_g, kernel_size, input_dimensions, output_dimensions):
+    def __init__(self, input_dimensions, output_dimensions, features_g=4, kernel_size=3):
         super().__init__()
         self.input_dimensions = input_dimensions
         self.output_dimensions = output_dimensions
