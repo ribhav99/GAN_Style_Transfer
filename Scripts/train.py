@@ -30,7 +30,7 @@ generator.train()
 
 print("Start Training....")
 for epoch in trange(num_epochs):
-    for batch_num, data, targets in enumerate(human_faces_dataloader):
+    for batch_num, data in enumerate(human_faces_dataloader):
         data = data.to(device)
 
         #Discriminator: max log(D(x)) + log(1 - D(G(z)))
