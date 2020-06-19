@@ -13,8 +13,8 @@ def train(args):
 
 
     loss_function = nn.BCELoss()
-    disciminator = Discriminator(args.features_d, args.kernel_size).to(device)
-    generator = Generator(args.features_g, args.kernel_size).to(device)
+    disciminator = Discriminator(args.features_d, args.kernel_size, args.image_dimensions).to(device)
+    generator = Generator(args.features_g, args.kernel_size, args.cartoon_dimensions, args.image_dimensions).to(device)
 
     optimiser_d = optim.Adam(disciminator.parameters(), lr=args.learning_rate)
     optimiser_g = optim.Adam(generator.parameters(), lr=args.learning_rate)

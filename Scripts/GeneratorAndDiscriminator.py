@@ -15,19 +15,20 @@ import numpy as np
 
 class Discriminator(nn.Module):
 
-    def __init__(self, features_d, kernel_size):
+    def __init__(self, features_d, kernel_size, input_dimensions):
         super().__init__()
+        self.input_dimensions = input_dimensions
         self._linear_dim = None
 
         # only takes in RGB images
-        self.conv1 = nn.Conv2d(image_dimensions[2], features_d, kernel_size, stride=2, padding=1)
+        self.conv1 = nn.Conv2d(self.input_dimensions[2], features_d, kernel_size, stride=2, padding=1)
         self.conv2 = nn.Conv2d(features_d, features_d * 2, kernel_size, stride=2, padding=1)
         self.conv3 = nn.Conv2d(features_d * 2, features_d * 4, kernel_size, stride=2, padding=1)
         self.conv4 = nn.Conv2d(features_d * 4, features_d * 8, kernel_size, stride=2, padding=1)
         self.conv5 = nn.Conv2d(features_d * 8, 1, kernel_size, stride=2, padding=1)
 
-# fake_data = torch.rand(image_dimensions).view(-1, image_dimensions[2], image_dimensions[0], image_dimensions[1])
-# self.conv(fake_data)
+        fake_data = torch.rand(self.input_dimensions).view(-1, self.input_dimensions[2], self.input_dimensions[0], self.input_dimensions[1])
+        self.conv(fake_data)
         
         self.dense1 = nn.Linear(self._linear_dim, 512)
         self.dense2 = nn.Linear(512, 1)
@@ -36,9 +37,9 @@ class Discriminator(nn.Module):
         x = F.max_pool2d(F.relu(self.conv1(x)), max_pool)
         x = F.max_pool2d(F.relu(self.conv2(x)), max_pool)
         x = F.max_pool2d(F.relu(self.conv3(x)), max_pool)
-        if min(image_dimensions) >= 256:
+        if min(self.input_dimensions) >= 256:
             x = F.max_pool2d(F.relu(self.conv4(x)), max_pool)
-        if min(image_dimensions) >= 1024:
+        if min(self.input_dimensions) >= 1024:
             x = F.max_pool2d(F.relu(self.conv5(x)), max_pool)
 
         if self._linear_dim is None:
@@ -58,11 +59,13 @@ class Discriminator(nn.Module):
 
 class Generator(nn.Module):
 
-    def __init__(self, features_g, kernel_size):
+    def __init__(self, features_g, kernel_size, input_dimensions, output_dimensions):
         super().__init__()
+        self.input_dimensions = input_dimensions
+        self.output_dimensions = output_dimensions
         self._linear_dim = None
 
-        self.conv1 = nn.Conv2d(cartoon_dimensions[2], features_g, kernel_size, padding=1)
+        self.conv1 = nn.Conv2d(self.input_dimensions[2], features_g, kernel_size, padding=1)
         self.conv2 = nn.Conv2d(features_g, features_g * 2, kernel_size, padding=1)
 
         self.trans_conv1 = nn.ConvTranspose2d(features_g * 2, features_g * 16, kernel_size, stride=2, padding=1)
@@ -72,11 +75,11 @@ class Generator(nn.Module):
         self.trans_conv5 = nn.ConvTranspose2d(features_g * 2, features_g, kernel_size, stride=2, padding=1)
 
 
-# fake_data = torch.rand(cartoon_dimensions).view(-1, cartoon_dimensions[2], cartoon_dimensions[0], cartoon_dimensions[1])
-# self.conv(fake_data)
+        fake_data = torch.rand(self.input_dimensions).view(-1, self.input_dimensions[2], self.input_dimensions[0], self.input_dimensions[1])
+        self.conv(fake_data)
 
-        self.dense1 = nn.Linear(self._linear_dim, (image_dimensions[0] * image_dimensions[1] * image_dimensions[2])//2)
-        self.dense2 = nn.Linear((image_dimensions[0] * image_dimensions[1] * image_dimensions[2])//2, image_dimensions[0] * image_dimensions[1] * image_dimensions[2])
+        self.dense1 = nn.Linear(self._linear_dim, (self.output_dimensions[0] * self.output_dimensions[1] * self.output_dimensions[2])//2)
+        self.dense2 = nn.Linear((self.output_dimensions[0] * self.output_dimensions[1] * self.output_dimensions[2])//2, self.output_dimensions[0] * self.output_dimensions[1] * self.output_dimensions[2])
     
     def conv(self, x):
         x = F.max_pool2d(F.relu(self.conv1(x)), max_pool)
