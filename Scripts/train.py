@@ -4,6 +4,7 @@ import torch.optim as optim
 from GeneratorAndDiscriminator import Generator, Discriminator
 from dataloader import get_data_loader
 from tqdm import tqdm, trange
+from datetime import datetime
 
 def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -58,6 +59,8 @@ def train(args):
             #if per epoch then it comes after this for loop
             if batch_num % 300 == 0:
                 print("accuracy")
+    torch.save(discriminator, "disciminator-{}.pt".format(datetime.now()))
+    torch.save(generator, "generator-{}.pt".format(datetime.now()))
 
 if __name__ == "__main__":
     #these are the ones we have to change most likely
