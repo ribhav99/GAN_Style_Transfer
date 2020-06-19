@@ -20,7 +20,7 @@ class Discriminator(nn.Module):
         self._linear_dim = None
 
         # only takes in RGB images
-        self.conv1 = nn.Conv2d(3, features_d, kernel_size, stride=2, padding=1)
+        self.conv1 = nn.Conv2d(image_dimensions[2], features_d, kernel_size, stride=2, padding=1)
         self.conv2 = nn.Conv2d(features_d, features_d * 2, kernel_size, stride=2, padding=1)
         self.conv3 = nn.Conv2d(features_d * 2, features_d * 4, kernel_size, stride=2, padding=1)
         self.conv4 = nn.Conv2d(features_d * 4, features_d * 8, kernel_size, stride=2, padding=1)
@@ -62,13 +62,14 @@ class Generator(nn.Module):
         super().__init__()
         self._linear_dim = None
 
-        #takes in grayscale images
-        self.conv1 = nn.ConvTranspose2d(3, features_g, kernel_size, stride=2, padding=1)
-        self.conv2 = nn.ConvTranspose2d(features_g, features_g * 16, kernel_size, stride=2, padding=1)
-        self.conv3 = nn.ConvTranspose2d(features_g * 16, features_g * 8, kernel_size, stride=2, padding=1)
-        self.conv4 = nn.ConvTranspose2d(features_g * 8, features_g * 4, kernel_size, stride=2, padding=1)
-        self.conv5 = nn.ConvTranspose2d(features_g * 4, features_g * 2, kernel_size, stride=2, padding=1)
-        self.conv6 = nn.ConvTranspose2d(features_g * 2, features_g, kernel_size, stride=2, padding=1)
+        self.conv1 = nn.Conv2d(cartoon_dimensions[2], features_g, kernel_size, padding=1)
+        self.conv2 = nn.Conv2d(features_g, features_g * 2, kernel_size, padding=1)
+
+        self.trans_conv1 = nn.ConvTranspose2d(features_g * 2, features_g * 16, kernel_size, stride=2, padding=1)
+        self.trans_conv2 = nn.ConvTranspose2d(features_g * 16, features_g * 8, kernel_size, stride=2, padding=1)
+        self.trans_conv3 = nn.ConvTranspose2d(features_g * 8, features_g * 4, kernel_size, stride=2, padding=1)
+        self.trans_conv4 = nn.ConvTranspose2d(features_g * 4, features_g * 2, kernel_size, stride=2, padding=1)
+        self.trans_conv5 = nn.ConvTranspose2d(features_g * 2, features_g, kernel_size, stride=2, padding=1)
 
 
         fake_data = torch.rand(cartoon_dimensions).view(-1, cartoon_dimensions[2], cartoon_dimensions[0], cartoon_dimensions[1])
@@ -80,10 +81,11 @@ class Generator(nn.Module):
     def conv(self, x):
         x = F.max_pool2d(F.relu(self.conv1(x)), max_pool)
         x = F.max_pool2d(F.relu(self.conv2(x)), max_pool)
-        x = F.max_pool2d(F.relu(self.conv3(x)), max_pool)
-        x = F.max_pool2d(F.relu(self.conv4(x)), max_pool)
-        x = F.max_pool2d(F.relu(self.conv5(x)), max_pool)
-        x = F.max_pool2d(F.relu(self.conv6(x)), max_pool)
+        x = F.max_pool2d(F.relu(self.trans_conv1(x)), max_pool)
+        x = F.max_pool2d(F.relu(self.trans_conv2(x)), max_pool)
+        x = F.max_pool2d(F.relu(self.trans_conv3(x)), max_pool)
+        x = F.max_pool2d(F.relu(self.trans_conv4(x)), max_pool)
+        x = F.max_pool2d(F.relu(self.trans_conv5(x)), max_pool)
 
         if self._linear_dim is None:
             self._linear_dim = np.prod(x[0].shape)
@@ -97,11 +99,13 @@ class Generator(nn.Module):
         x = F.relu(self.dense2(x))
         return x
 
+
+
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #THESE VALUES FOR TESTING. REMOVE THEM
 features_d = 64
 kernel_size = 3
-image_dimensions = (128, 128, 3)
+image_dimensions = (218, 178, 3)
 max_pool = (2,2)
 x = torch.rand(image_dimensions).view(-1, 3, image_dimensions[0], image_dimensions[1])
 
