@@ -7,7 +7,8 @@ from skimage import io
 class GANDataset(Dataset):
     """
     Dataset for human faces, must do the train test split before and call
-    torch.tensor on its outputs, the channels are flipped already
+    torch.tensor on its outputs, the channels are flipped already.
+    Data from: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
     """
     def __init__(self,txtfilepath,root_dir, transform = None):
         self.dir = root_dir
