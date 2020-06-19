@@ -15,7 +15,7 @@ def train(args):
     discriminator = Discriminator(args.image_dimensions, args.features_d, args.kernel_size).to(device)
     generator = Generator(args.cartoon_dimensions, args.image_dimensions, args.features_g, args.kernel_size).to(device)
 
-    optimiser_d = optim.Adam(disciminator.parameters(), lr=args.learning_rate)
+    optimiser_d = optim.Adam(discriminator.parameters(), lr=args.learning_rate)
     optimiser_g = optim.Adam(generator.parameters(), lr=args.learning_rate)
 
     discriminator.train()
