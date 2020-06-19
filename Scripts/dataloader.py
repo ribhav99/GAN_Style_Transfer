@@ -12,24 +12,34 @@ class GANDataset(Dataset):
     Human faces data from: http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
     Cartoon data from: https://google.github.io/cartoonset/
     """
-    def __init__(self,txtfilepath,root_dir, transform = None):
-        self.dir = root_dir
+    def __init__(self,human_file_path, cartoon_file_path,human_root_dir, cartoon_root_dir, transform = None):
+        self.human_dir = human_root_dir
+        self.cartoon_dir = cartoon_root_dir
         self.transform = transform
-        self.array = pd.read_csv(txtfilepath, sep=" ", header=None)[0].values.tolist()
-    def __len__(self):
-        return len(self.array)
+        self.human_array = pd.read_csv(human_file_path, sep=" ", header=None)[0].values.tolist()
+        self.cartoon_array = pd.read_csv(cartoon_file_path, sep=" ", header=None)[0].values.tolist()
+        assert len(self.human_array) == len(self.cartoon_array)
 
-    def __getitem__(self,idx):
-        img_name = os.path.join(self.dir,self.array[idx])
+    def __len__(self):
+        return len(self.human_array)
+    def load(self,root_dir , idstr):
+        img_name = os.path.join(root_dir, idstr)
         image = io.imread(img_name)
         if self.transform:
             image = self.transform(image)
         image = np.moveaxis(image,-1,0)
         return image
 
-def get_data_loader(txtpath, root_dir, batch_size, transform = None):
-    data_set = GANDataset(txtpath,root_dir, transform)
-    dataloader = DataLoader(data_set, batch_size=batch_size, shuffle=True)
+    def __getitem__(self,idx):
+        human_face = self.load(self.human_dir, self.human_array[idx])
+        cartoon_face = self.load(self.cartoon_dir, self.cartoon_array[idx])
+        return human_face, cartoon_face
+
+def get_data_loader(args, train = True, transform = None):
+    human_txt_path = args.human_train_path if train is True else args.human_test_path
+    cartoon_txt_path = args.cartoon_train_path if train is True else args.cartoon_test_path
+    data_set = GANDataset(human_txt_path, cartoon_txt_path, args.human_data_root_path, args.cartoon_data_root_path, transform)
+    dataloader = DataLoader(data_set, batch_size=args.batch_size, shuffle=True)
     return dataloader
 
 
