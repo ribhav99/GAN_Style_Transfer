@@ -113,20 +113,20 @@ class Generator(nn.Module):
 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # THESE VALUES FOR TESTING. REMOVE THEM
-# features_d = 64
-# kernel_size = 3
-# image_dimensions = (218, 178, 3)
-# max_pool = (2,2)
-# x = torch.rand(image_dimensions).view(-1, 3, image_dimensions[0], image_dimensions[1])
+features_d = 64
+kernel_size = 3
+image_dimensions = (218, 178, 3)
+max_pool = (2,2)
+x = torch.rand(image_dimensions).view(-1, 3, image_dimensions[0], image_dimensions[1])
 
-# disciminator = Discriminator(image_dimensions, features_d, kernel_size, max_pool)
-# print(disciminator(x))
+disciminator = Discriminator(image_dimensions, features_d, kernel_size, max_pool)
+print(disciminator(x))
 
 
-# features_g = 2
-# cartoon_dimensions = (128, 128, 3)
-# y = torch.rand(cartoon_dimensions).view(-1, cartoon_dimensions[2], cartoon_dimensions[0], cartoon_dimensions[1])
-# generator = Generator(cartoon_dimensions, image_dimensions, features_g, kernel_size, max_pool)
-# y = generator(y).view(-1, image_dimensions[0], image_dimensions[1], image_dimensions[2])
-# print(y.shape)
+features_g = 2
+cartoon_dimensions = (128, 128, 3)
+y = torch.rand(cartoon_dimensions).view(-1, cartoon_dimensions[2], cartoon_dimensions[0], cartoon_dimensions[1])
+generator = Generator(cartoon_dimensions, image_dimensions, features_g, kernel_size, max_pool)
+y = generator(y).view(-1, image_dimensions[0], image_dimensions[1], image_dimensions[2])
+print(y.shape)
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
