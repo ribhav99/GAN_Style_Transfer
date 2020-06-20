@@ -73,39 +73,40 @@ class Generator(nn.Module):
 
         self.conv1 = nn.Conv2d(self.input_dimensions[2], self.features_g, self.kernel_size, padding=1)
         self.conv2 = nn.Conv2d(features_g, features_g * 2, kernel_size, padding=1)
-
-        self.trans_conv1 = nn.ConvTranspose2d(self.features_g * 2, self.features_g * 16, self.kernel_size, stride=2, padding=1)
-        self.trans_conv2 = nn.ConvTranspose2d(self.features_g * 16, self.features_g * 8, self.kernel_size, stride=2, padding=1)
-        self.trans_conv3 = nn.ConvTranspose2d(self.features_g * 8, self.features_g * 4, self.kernel_size, stride=2, padding=1)
-        self.trans_conv4 = nn.ConvTranspose2d(self.features_g * 4, self.features_g * 2, self.kernel_size, stride=2, padding=1)
-        self.trans_conv5 = nn.ConvTranspose2d(self.features_g * 2, self.features_g, self.kernel_size, stride=2, padding=1)
-
+        self.conv3 = nn.Conv2d(features_g * 2, features_g * 4, kernel_size, padding=1)
 
         fake_data = torch.rand(self.input_dimensions).view(-1, self.input_dimensions[2], self.input_dimensions[0], self.input_dimensions[1])
-        self.conv(fake_data)
+        self.down_conv(fake_data)
 
-        self.dense1 = nn.Linear(self._linear_dim, (self.output_dimensions[0] * self.output_dimensions[1] * self.output_dimensions[2])//2)
-        self.dense2 = nn.Linear((self.output_dimensions[0] * self.output_dimensions[1] * self.output_dimensions[2])//2, self.output_dimensions[0] * self.output_dimensions[1] * self.output_dimensions[2])
+        self.dense1 = nn.Linear(self._linear_dim, self.output_dimensions[0] * self.output_dimensions[1] * self.output_dimensions[2])
+
+        self.trans_conv1 = nn.ConvTranspose2d(output_dimensions[2], self.features_g * 8, self.kernel_size, stride=2, padding=0)
+        self.trans_conv2 = nn.ConvTranspose2d(self.features_g * 8, self.features_g * 4, self.kernel_size, stride=2, padding=0)
+        self.trans_conv3 = nn.ConvTranspose2d(self.features_g * 4, output_dimensions[2], self.kernel_size, stride=2, padding=0)
     
-    def conv(self, x):
+    def down_conv(self, x):
         x = F.max_pool2d(F.relu(self.conv1(x)), self.max_pool)
         x = F.max_pool2d(F.relu(self.conv2(x)), self.max_pool)
-        x = F.max_pool2d(F.relu(self.trans_conv1(x)), self.max_pool)
-        x = F.max_pool2d(F.relu(self.trans_conv2(x)), self.max_pool)
-        x = F.max_pool2d(F.relu(self.trans_conv3(x)), self.max_pool)
-        x = F.max_pool2d(F.relu(self.trans_conv4(x)), self.max_pool)
-        x = F.max_pool2d(F.relu(self.trans_conv5(x)), self.max_pool)
+        x = F.max_pool2d(F.relu(self.conv3(x)), self.max_pool)
 
         if self._linear_dim is None:
             self._linear_dim = np.prod(x[0].shape)
         
         return x
+
+    def up_conv(self, x):
+        x = F.max_pool2d(F.relu(self.trans_conv1(x)), self.max_pool)
+        x = F.max_pool2d(F.relu(self.trans_conv2(x)), self.max_pool)
+        x = F.max_pool2d(F.relu(self.trans_conv3(x)), self.max_pool)
+        
+        return x
     
     def forward(self, x):
-        x = self.conv(x)
+        x = self.down_conv(x)
         x = x.view(-1, self._linear_dim)
         x = F.relu(self.dense1(x))
-        x = F.relu(self.dense2(x))
+        x = x.view(-1, self.output_dimensions[2], self.output_dimensions[0], self.output_dimensions[1])
+        x = self.up_conv(x)
         return x
 
 
