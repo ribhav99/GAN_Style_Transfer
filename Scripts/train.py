@@ -67,14 +67,14 @@ def train(args):
             loss_g.backward()
             optimiser_g.step()
             loss_gen += loss_g.item()
-            if epoch + 1 % args.image_save_f == 0: 
-                matrix_of_img = fake.detach()[:10,...]
-                if args.use_wandb:
-                    wandb.log({"examples" : [wandb.Image(matrix_of_img[i]) for i in range(10)]})
-                else:
-                    #insert your plotting code here
-                    pass
-                del matrix_of_img
+        if epoch + 1 % args.image_save_f == 0: 
+            matrix_of_img = fake.detach()[:10,...]
+            if args.use_wandb:
+                wandb.log({"examples" : [wandb.Image(matrix_of_img[i]) for i in range(10)]})
+            else:
+                #insert your plotting code here
+                pass
+            del matrix_of_img
         total = batch_num + 1
         avg_loss_gen = loss_gen /total
         avg_loss_discrim = loss_discrim / total
