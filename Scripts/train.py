@@ -82,12 +82,12 @@ if __name__ == "__main__":
     'features_g' : 2,
     'num_epochs' : 30,
     'kernel_size' : 3,
-    'human_train_path' : "/content/drive/My Drive/CSC420Project/human_train.txt",
-    'human_test_path' : "/content/drive/My Drive/CSC420Project/human_test.txt",
-    'cartoon_train_path' : "/content/drive/My Drive/CSC420Project/cartoon_train.txt",
-    'cartoon_test_path' : "/content/drive/My Drive/CSC420Project/cartoon_test.txt",
-    'human_data_root_path' : "/content/drive/My Drive/CSC420Project/GanData/humanfaces",
-    'cartoon_data_root_path' : "/content/drive/My Drive/CSC420Project/GanData/cartoonfaces",
+    'human_train_path' : "/conent/GAN_Style_Transfer/data/human_train.txt",
+    'human_test_path' : "/conent/GAN_Style_Transfer/data/human_test.txt",
+    'cartoon_train_path' : "/conent/GAN_Style_Transfer/data/cartoon_train.txt",
+    'cartoon_test_path' : "/conent/GAN_Style_Transfer/data/cartoon_test.txt",
+    'human_data_root_path' : "/content/humanfaces/",
+    'cartoon_data_root_path' : "/content/cartoonfaces/",
     'save_path' : "/content/GAN_Style/Transfer/Models"
     }
     args.update(args_dict)
