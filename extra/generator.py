@@ -14,7 +14,7 @@ class SIRENGenerator(nn.Module):
         self.layer6 = nn.Sequential(nn.Linear(1000, 2000))
         self.layer7 = nn.Sequential(nn.Linear(2000, 3600))
         self.layer8 = nn.Sequential(nn.ConvTranspose2d(1, 2, 3))
-        self.layer9 = nn.Sequential(nn.ConvTranspose2d(2, 4, 3))
+        self.layer9 = nn.Sequential(nn.ConvTranspose2d(2, 3, 3))
         self.layer10 = nn.Upsample(scale_factor =2)
 
     def forward(self, x):
