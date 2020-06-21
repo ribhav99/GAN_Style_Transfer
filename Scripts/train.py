@@ -76,14 +76,15 @@ def train(args):
                 else:
                     #insert your plotting code here
                     pass
+                del matrix_of_img
         total = batch_num + 1
         avg_loss_gen = loss_gen /total
         avg_loss_discrim = loss_discrim / total
         if args.use_wandb:
             wandb.log({"discriminator loss": avg_loss_discrim})
             wandb.log({"generator loss": avg_loss_gen})
-        print("Average discriminator loss for epoch {} is {}".format(avg_loss_discrim, epoch + 1) 
-        print("Average generator loss for epoch {} is {}".format(avg_loss_gen, epoch + 1) 
+        print("Average discriminator loss for epoch {} is {}".format(avg_loss_discrim, epoch + 1))
+        print("Average generator loss for epoch {} is {}".format(avg_loss_gen, epoch + 1)) 
         if not args.use_wandb:
             torch.save(discriminator, args.save_path + "/{}disciminator-{}.pt".format(datetime.now(), epoch + 1))
             torch.save(generator, args.save_path + "/{}generator-{}.pt".format(datetime.now(), epoch + 1))
