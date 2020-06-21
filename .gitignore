@@ -2,4 +2,5 @@
 *.iml
 *.xml
 *.pyc
+*.swp
 .vscode/settings.json
