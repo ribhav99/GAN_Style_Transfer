@@ -19,7 +19,6 @@ class GANDataset(Dataset):
         self.transform = transform
         self.human_array = pd.read_csv(human_file_path, sep=" ", header=None)[0].values.tolist()
         self.cartoon_array = pd.read_csv(cartoon_file_path, sep=" ", header=None)[0].values.tolist()
-        print(len(self.human_array), len(self.cartoon_array))
         assert len(self.human_array) == len(self.cartoon_array)
 
     def __len__(self):
