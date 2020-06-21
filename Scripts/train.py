@@ -40,8 +40,6 @@ def train(args):
         loss_discrim = 0.0
         for batch_num, data in enumerate(tqdm(full_data)):
             human_faces, cartoon_faces = data
-            human_faces = human_faces.to(device)
-            cartoon_faces = cartoon_faces.to(device)
             batch_size = human_faces.shape[0]
 
             #Discriminator: max log(D(x)) + log(1 - D(G(z)))
@@ -86,16 +84,16 @@ def train(args):
         print("Average discriminator loss for epoch {} is {}".format(avg_loss_discrim, epoch + 1))
         print("Average generator loss for epoch {} is {}".format(avg_loss_gen, epoch + 1)) 
         if not args.use_wandb:
-            torch.save(discriminator, args.save_path + "/{}disciminator-{}.pt".format(datetime.now(), epoch + 1))
-            torch.save(generator, args.save_path + "/{}generator-{}.pt".format(datetime.now(), epoch + 1))
+            torch.save(discriminator.state_dict(), args.save_path + "/{}disciminator-{}.pt".format(datetime.now(), epoch + 1))
+            torch.save(generator.state_dict(), args.save_path + "/{}generator-{}.pt".format(datetime.now(), epoch + 1))
     if args.use_wandb:
         torch.save(discriminator.state_dict(), "discriminator.pt")
         torch.save(generator.state_dict(), "generator.pt")
         wandb.save("discriminator.pt")
         wandb.save("generator.pt")
     else:
-        torch.save(discriminator, args.save_path + "/disciminator-{}-FINAL.pt".format(datetime.now()))
-        torch.save(generator, args.save_path + "/generator-{}-FINAL.pt".format(datetime.now()))
+        torch.save(discriminator.state_dict(), args.save_path + "/disciminator-{}-FINAL.pt".format(datetime.now()))
+        torch.save(generator.state_dict(), args.save_path + "/generator-{}-FINAL.pt".format(datetime.now()))
 
 if __name__ == "__main__":
     #these are the ones we have to change most likely
