@@ -9,6 +9,13 @@ from preprocess import make_human_text_file, make_cartoon_text_file
 from train_test_split import split_human_data, split_cartoon_data
 
 def train(args):
+    
+    #Preproess data
+    make_human_text_file(args)
+    make_cartoon_text_file(args)
+    split_human_data(args)
+    split_cartoon_data(args)
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     #LOAD DATA .......
@@ -93,9 +100,4 @@ if __name__ == "__main__":
     'save_path' : "/content/GAN_Style/Transfer/Models"
     }
     args.update(args_dict)
-
-    make_human_text_file(args)
-    make_cartoon_text_file(args)
-    split_human_data(args)
-    split_cartoon_data(args)
     train(args)
