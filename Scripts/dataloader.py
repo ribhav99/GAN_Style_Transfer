@@ -19,6 +19,7 @@ class GANDataset(Dataset):
         self.transform = transform
         self.human_array = pd.read_csv(human_file_path, sep=" ", header=None)[0].values.tolist()
         self.cartoon_array = pd.read_csv(cartoon_file_path, sep=" ", header=None)[0].values.tolist()
+        print(len(self.human_array), len(self.cartoon_array))
         assert len(self.human_array) == len(self.cartoon_array)
 
     def __len__(self):
@@ -42,5 +43,3 @@ def get_data_loader(args, train = True, transform = None):
     data_set = GANDataset(human_txt_path, cartoon_txt_path, args.human_data_root_path, args.cartoon_data_root_path, transform)
     dataloader = DataLoader(data_set, batch_size=args.batch_size, shuffle=True)
     return dataloader
-
-

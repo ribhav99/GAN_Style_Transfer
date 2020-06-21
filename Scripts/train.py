@@ -24,8 +24,10 @@ def train(args):
 
     print("Start Training....")
     for epoch in trange(args.num_epochs):
-        for batch_num, data in enumerate(full_data):
+        for batch_num, data in tqdm(enumerate(full_data)):
             human_faces, cartoon_faces = data
+            human_faces = human_faces.to(device)
+            cartoon_faces = cartoon_faces.to(device)
 
             #Discriminator: max log(D(x)) + log(1 - D(G(z)))
             optimiser_d.zero_grad()
@@ -56,8 +58,12 @@ def train(args):
             #if per epoch then it comes after this for loop
             if batch_num % 300 == 0:
                 print("accuracy")
-    torch.save(discriminator, "disciminator-{}.pt".format(datetime.now()))
-    torch.save(generator, "generator-{}.pt".format(datetime.now()))
+
+        torch.save(discriminator, args.save_path + "/{}disciminator-{}.pt".format(datetime.now(), epoch))
+        torch.save(generator, args.save_path + "/{}generator-{}.pt".format(datetime.now(), epoch))
+
+    torch.save(discriminator, args.save_path + "/disciminator-{}-FINAL.pt".format(datetime.now()))
+    torch.save(generator, args.save_path + "/generator-{}-FINAL.pt".format(datetime.now()))
 
 if __name__ == "__main__":
     #these are the ones we have to change most likely
@@ -67,21 +73,22 @@ if __name__ == "__main__":
     from attrdict import AttrDict
     args = AttrDict()
     args_dict = {
-        'learning_rate': 0.001,
-        'batch_size' : 32,
-        'image_dimensions' : (218, 178, 3), 
-        'cartoon_dimensions' : (128, 128, 3),
-        'max_pool' : (2, 2),
-        'features_d' : 64,
-        'features_g' : 2,
-        'num_epochs' : 30,
-        'kernel_size' : 3,
-        'human_train_path' : "../data/human_train.txt",
-        'human_test_path' : "../data/human_test.txt",
-        'cartoon_train_path' : "../data/cartoon_train.txt",
-        'cartoon_test_path' : "../data/cartoon_test.txt",
-        'human_data_root_path' : root_human_data,
-        'cartoon_data_root_path' : root_cartoon_data
+    'learning_rate': 0.001,
+    'batch_size' : 32,
+    'image_dimensions' : (218, 178, 3), 
+    'cartoon_dimensions' : (128, 128, 3),
+    'max_pool' : (2, 2),
+    'features_d' : 2,
+    'features_g' : 2,
+    'num_epochs' : 30,
+    'kernel_size' : 3,
+    'human_train_path' : "/content/drive/My Drive/CSC420Project/human_train.txt",
+    'human_test_path' : "/content/drive/My Drive/CSC420Project/human_test.txt",
+    'cartoon_train_path' : "/content/drive/My Drive/CSC420Project/cartoon_train.txt",
+    'cartoon_test_path' : "/content/drive/My Drive/CSC420Project/cartoon_test.txt",
+    'human_data_root_path' : "/content/drive/My Drive/CSC420Project/GanData/humanfaces",
+    'cartoon_data_root_path' : "/content/drive/My Drive/CSC420Project/GanData/cartoonfaces",
+    'save_path' : "/content/GAN_Style/Transfer/Models"
     }
     args.update(args_dict)
     train(args)
