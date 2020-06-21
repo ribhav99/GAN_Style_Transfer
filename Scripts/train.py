@@ -33,7 +33,7 @@ def train(args):
 
     print("Start Training....")
     for epoch in trange(args.num_epochs):
-        for batch_num, data in tqdm(enumerate(full_data)):
+        for batch_num, data in enumerate(tqdm(full_data)):
             human_faces, cartoon_faces = data
             human_faces = human_faces.to(device)
             cartoon_faces = cartoon_faces.to(device)
