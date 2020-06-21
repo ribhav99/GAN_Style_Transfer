@@ -8,7 +8,7 @@ from datetime import datetime
 from preprocess import make_human_text_file, make_cartoon_text_file
 from train_test_split import split_human_data, split_cartoon_data
 
-def train(args):
+def train(args, wandb = None):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     #Preproess data
@@ -38,7 +38,7 @@ def train(args):
     for epoch in trange(args.num_epochs):
         loss_gen = 0.0
         loss_discrim = 0.0
-        for batch_num, data in enumerate(tqdm(full_data)):
+        for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
             batch_size = human_faces.shape[0]
 
