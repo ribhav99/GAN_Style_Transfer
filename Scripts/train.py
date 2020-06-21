@@ -37,15 +37,16 @@ def train(args):
             human_faces, cartoon_faces = data
             human_faces = human_faces.to(device)
             cartoon_faces = cartoon_faces.to(device)
+            batch_size = human_faces.shape[0]
 
             #Discriminator: max log(D(x)) + log(1 - D(G(z)))
             optimiser_d.zero_grad()
-            labels = torch.ones(args.batch_size, device = device)
+            labels = torch.ones(batch_size, device = device)
             output_d = discriminator(human_faces).reshape(-1)
             loss_d_real = loss_function(output_d, labels)
             
             fake = generator(cartoon_faces).view(-1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
-            labels = torch.zeros(args.batch_size, device = device)
+            labels = torch.zeros(batch_size, device = device)
 
             output_d = discriminator(fake.detach()).reshape(-1)
             loss_d_fake = loss_function(output_d, labels)
@@ -56,7 +57,7 @@ def train(args):
 
             #Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
-            labels = torch.ones(args.batch_size, device = device)
+            labels = torch.ones(batch_size, device = device)
             output = discriminator(fake).reshape(-1)
             loss_g = loss_function(output, labels)
             loss_g.backward()
