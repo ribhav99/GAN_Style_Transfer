@@ -9,7 +9,7 @@ from preprocess import make_human_text_file, make_cartoon_text_file
 from train_test_split import split_human_data, split_cartoon_data
 
 def train(args):
-    
+
     #Preproess data
     make_human_text_file(args)
     make_cartoon_text_file(args)
@@ -91,13 +91,13 @@ if __name__ == "__main__":
     'features_g' : 2,
     'num_epochs' : 30,
     'kernel_size' : 3,
-    'human_train_path' : "/conent/GAN_Style_Transfer/data/human_train.txt",
-    'human_test_path' : "/conent/GAN_Style_Transfer/data/human_test.txt",
-    'cartoon_train_path' : "/conent/GAN_Style_Transfer/data/cartoon_train.txt",
-    'cartoon_test_path' : "/conent/GAN_Style_Transfer/data/cartoon_test.txt",
+    'human_train_path' : "/content/GAN_Style_Transfer/data/human_train.txt",
+    'human_test_path' : "/content/GAN_Style_Transfer/data/human_test.txt",
+    'cartoon_train_path' : "/content/GAN_Style_Transfer/data/cartoon_train.txt",
+    'cartoon_test_path' : "/content/GAN_Style_Transfer/data/cartoon_test.txt",
     'human_data_root_path' : "/content/humanfaces/",
     'cartoon_data_root_path' : "/content/cartoonfaces/",
-    'save_path' : "/content/GAN_Style/Transfer/Models"
+    'save_path' : "/content/GAN_Style_Transfer/Models"
     }
     args.update(args_dict)
     train(args)
