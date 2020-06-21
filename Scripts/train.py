@@ -67,7 +67,7 @@ def train(args, wandb = None):
             loss_g.backward()
             optimiser_g.step()
             loss_gen += loss_g.item()
-        if epoch + 1 % args.image_save_f == 0: 
+        if (epoch + 1) % args.image_save_f == 0: 
             matrix_of_img = fake.detach()[:10,...]
             if args.use_wandb:
                 name = "examples " + "epoch " + str(epoch + 1)
