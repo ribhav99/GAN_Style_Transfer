@@ -47,23 +47,24 @@ def train(args, wandb=None):
             cartoon_faces = cartoon_faces.to(device)
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
-            optimiser_d.zero_grad()
-            labels = torch.ones(batch_size, device=device)
-            output_d = discriminator(human_faces).reshape(-1)
-            loss_d_real = loss_function(output_d, labels)
+            if epoch % args.discrim_train_f == 0:
+                optimiser_d.zero_grad()
+                labels = torch.ones(batch_size, device=device)
+                output_d = discriminator(human_faces).reshape(-1)
+                loss_d_real = loss_function(output_d, labels)
 
-            fake = generator(cartoon_faces).view(
-                -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
+                fake = generator(cartoon_faces).view(
+                    -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
-            labels = torch.zeros(batch_size, device=device)
+                labels = torch.zeros(batch_size, device=device)
 
-            output_d = discriminator(fake.detach()).reshape(-1)
-            loss_d_fake = loss_function(output_d, labels)
+                output_d = discriminator(fake.detach()).reshape(-1)
+                loss_d_fake = loss_function(output_d, labels)
 
-            loss_d = loss_d_real + loss_d_fake
-            loss_d.backward()
-            optimiser_d.step()
-            loss_discrim += loss_d.item()
+                loss_d = loss_d_real + loss_d_fake
+                loss_d.backward()
+                optimiser_d.step()
+                loss_discrim += loss_d.item()
 
             # Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
@@ -134,7 +135,8 @@ if __name__ == "__main__":
         'human_data_root_path': "/content/humanfaces128/",
         'cartoon_data_root_path': "/content/cartoonfaces/",
         'save_path': "/content/GAN_Style_Transfer/Models",
-        'image_save_f': 10,  # i.e save an image every 10 epochs
+        'image_save_f': 1,  # i.e save an image every 1 epochs
+        'discrim_train_f': 2,
         'use_wandb': True
     }
     args.update(args_dict)
