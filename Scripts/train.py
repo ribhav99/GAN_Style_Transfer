@@ -119,7 +119,7 @@ if __name__ == "__main__":
     args = AttrDict()
     args_dict = {
         'dis_learning_rate': 0.001,
-        'gen_learning_rate': 0.004,
+        'gen_learning_rate': 0.002,
         'image_dimensions': (128, 128, 3),
         'cartoon_dimensions': (128, 128, 3),
         'batch_size': 64,
