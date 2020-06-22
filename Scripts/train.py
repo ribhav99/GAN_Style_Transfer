@@ -118,22 +118,24 @@ if __name__ == "__main__":
     args = AttrDict()
     args_dict = {
         'dis_learning_rate': 0.001,
-        'gen_learning_rate': 0.001,
+        'gen_learning_rate': 0.004,
+        'image_dimensions': (128, 128, 3),
+        'cartoon_dimensions': (128, 128, 3),
         'batch_size': 64,
         'max_pool': (2, 2),
-        'features_d': 2,
-        'features_g': 2,
+        'features_d': 16,
+        'features_g': 16,
         'num_epochs': 30,
         'kernel_size': 3,
         'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
         'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
         'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
         'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-        'human_data_root_path': "/content/humanfaces/",
+        'human_data_root_path': "/content/humanfaces128/",
         'cartoon_data_root_path': "/content/cartoonfaces/",
         'save_path': "/content/GAN_Style_Transfer/Models",
         'image_save_f': 10,  # i.e save an image every 10 epochs
-        'use_wandb': False
+        'use_wandb': True
     }
     args.update(args_dict)
     train(args)
