@@ -113,9 +113,6 @@ def train(args, wandb=None):
 
 
 if __name__ == "__main__":
-    # these are the ones we have to change most likely
-    root_human_data = "/Users/gerald/Desktop/GAN datasets/humanfaces"
-    root_cartoon_data = "/Users/gerald/Desktop/GAN datasets/cartoonfaces"
     ####
     from attrdict import AttrDict
     args = AttrDict()
