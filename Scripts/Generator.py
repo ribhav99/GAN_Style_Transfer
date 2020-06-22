@@ -32,7 +32,3 @@ class Generator(nn.Module):
         return x
 
 
-y = torch.rand(2, 3, 128, 128)
-generator = Generator()
-y = generator(y)
-print(y.shape)

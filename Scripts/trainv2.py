@@ -27,20 +27,21 @@ def train(args, wandb = None):
     for epoch in trange(args.num_epochs):
         loss_gen = 0.0
         loss_discrim = 0.0
+        to_train_dis = ((epoch + 1) % args.discrim_train_f == 0)
+        total_discrim_trained = 0
         for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
             batch_size = human_faces.shape[0]
-
-            optimiser_d.zero_grad()
-            real_pred = discriminator(human_faces)
             fake_images = generator(cartoon_faces)
-
-            fake_pred = discriminator(fake_images.detach())
-            loss_d = ((real_pred - 1)**2).mean() + (fake_pred**2).mean()
-            loss_d.backward()
-            optimiser_d.step()
-            loss_discrim += loss_d.item()
-
+            if to_train_dis:
+                optimiser_d.zero_grad()
+                real_pred = discriminator(human_faces)
+                fake_pred = discriminator(fake_images.detach())
+                loss_d = ((real_pred - 1)**2).mean() + (fake_pred**2).mean()
+                loss_d.backward()
+                optimiser_d.step()
+                loss_discrim += loss_d.item()
+                total_discrim_trained += 1
             optimiser_g.zero_grad()
             fake_pred_for_generator = discriminator(fake_images)
             loss_g = ((fake_pred_for_generator - 1)**2).mean() 
@@ -55,12 +56,12 @@ def train(args, wandb = None):
             del matrix_of_img
         total = batch_num + 1
         avg_loss_gen = loss_gen /total
-        avg_loss_discrim = loss_discrim / total
-
         if args.use_wandb:
-            wandb.log({"discriminator loss": avg_loss_discrim, 'epoch': epoch + 1})
             wandb.log({"generator loss": avg_loss_gen, 'epoch': epoch + 1})
-        print("\nAverage discriminator loss for epoch {} is {}".format(epoch + 1, avg_loss_discrim))
+        if to_train_dis:
+            avg_loss_discrim = loss_discrim / total_discrim_trained
+            wandb.log({"discriminator loss": avg_loss_discrim, 'epoch': epoch + 1})
+            print("\nAverage discriminator loss for epoch {} is {}".format(epoch + 1, avg_loss_discrim))
         print("Average generator loss for epoch {} is {}".format(epoch + 1, avg_loss_gen)) 
 
     if args.use_wandb:
@@ -96,6 +97,7 @@ if __name__ == "__main__":
     'cartoon_data_root_path' : "/content/cartoonfaces/",
     'save_path' : "/content/GAN_Style_Transfer/Models",
     'image_save_f' : 10, #i.e save an image every 10 epochs
+    'discrim_train_f': 2, #every second epoch we train the discriminator
     'use_wandb' : False
     }
     args.update(args_dict)
