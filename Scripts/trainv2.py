@@ -27,7 +27,7 @@ def train(args, wandb = None):
     for epoch in trange(args.num_epochs):
         loss_gen = 0.0
         loss_discrim = 0.0
-        to_train_dis = ((epoch + 1) % args.discrim_train_f == 0)
+        to_train_dis = (epoch % args.discrim_train_f == 0)
         total_discrim_trained = 0
         for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
