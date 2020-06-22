@@ -136,7 +136,7 @@ if __name__ == "__main__":
         'cartoon_data_root_path': "/content/cartoonfaces/",
         'save_path': "/content/GAN_Style_Transfer/Models",
         'image_save_f': 1,  # i.e save an image every 1 epochs
-        'discrim_train_f': 2,
+        'discrim_train_f': 5,
         'use_wandb': True
     }
     args.update(args_dict)
