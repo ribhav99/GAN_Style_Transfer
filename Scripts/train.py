@@ -53,12 +53,14 @@ def train(args, wandb=None):
             if epoch % args.discrim_train_f == 0:
                 optimiser_d.zero_grad()
                 labels = torch.ones(batch_size, device=device)
-                output_d = discriminator(human_faces).reshape(-1)
+                output_d = discriminator(
+                    human_faces).view(-1, batch_size)  # here
                 loss_d_real = loss_function(output_d, labels)
 
                 labels = torch.zeros(batch_size, device=device)
 
-                output_d = discriminator(fake.detach()).reshape(-1)
+                output_d = discriminator(
+                    fake.detach()).view(-1, batch_size)  # here
                 loss_d_fake = loss_function(output_d, labels)
 
                 loss_d = loss_d_real + loss_d_fake
@@ -69,7 +71,7 @@ def train(args, wandb=None):
             # Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
             labels = torch.ones(batch_size, device=device)
-            output = discriminator(fake).reshape(-1)
+            output = discriminator(fake).view(-1, batch_size)  # here
             loss_g = loss_function(output, labels)
             loss_g.backward()
             optimiser_g.step()
