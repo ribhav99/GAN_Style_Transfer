@@ -72,6 +72,7 @@ def train(args, wandb=None):
             optimiser_g.zero_grad()
             labels = torch.ones(batch_size, device=device)
             output = discriminator(fake).view(-1, batch_size)  # here
+            print("OUTPUTSHAPE: ", output.shape)
             loss_g = loss_function(output, labels)
             loss_g.backward()
             optimiser_g.step()
