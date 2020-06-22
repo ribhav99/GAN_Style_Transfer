@@ -103,42 +103,42 @@ class Generator(nn.Module):
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # THESE VALUES FOR TESTING. REMOVE THEM
 
-args = AttrDict()
-args_dict = {
-    'learning_rate': 0.001,
-    'batch_size': 1,
-    'image_dimensions': (218, 178, 3),
-    'cartoon_dimensions': (128, 128, 3),
-    'max_pool': (2, 2),
-    'features_d': 16,
-    'features_g': 16,
-    'num_epochs': 30,
-    'kernel_size': 3,
-    'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
-    'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
-    'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
-    'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-    'human_data_root_path': "/content/humanfaces/",
-    'cartoon_data_root_path': "/content/cartoonfaces/",
-    'save_path': "/content/GAN_Style_Transfer/Models",
-    'image_save_f': 10,  # i.e save an image every 10 epochs
-    'use_wandb': False
-}
-args.update(args_dict)
+# args = AttrDict()
+# args_dict = {
+#     'learning_rate': 0.001,
+#     'batch_size': 1,
+#     'image_dimensions': (218, 178, 3),
+#     'cartoon_dimensions': (128, 128, 3),
+#     'max_pool': (2, 2),
+#     'features_d': 16,
+#     'features_g': 16,
+#     'num_epochs': 30,
+#     'kernel_size': 3,
+#     'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
+#     'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
+#     'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
+#     'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
+#     'human_data_root_path': "/content/humanfaces/",
+#     'cartoon_data_root_path': "/content/cartoonfaces/",
+#     'save_path': "/content/GAN_Style_Transfer/Models",
+#     'image_save_f': 10,  # i.e save an image every 10 epochs
+#     'use_wandb': False
+# }
+# args.update(args_dict)
 
 
-# x = torch.rand(args.image_dimensions).view(-1, 3,
-#                                            args.image_dimensions[0], args.image_dimensions[1])
-x = torch.rand(2, 3, 218, 178)
+# # x = torch.rand(args.image_dimensions).view(-1, 3,
+# #                                            args.image_dimensions[0], args.image_dimensions[1])
+# x = torch.rand(2, 3, 218, 178)
 
-disciminator = Discriminator(args)
-print(disciminator(x))
+# disciminator = Discriminator(args)
+# print(disciminator(x))
 
-# y = torch.rand(args.cartoon_dimensions).view(-1,
-#                                              args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
-y = torch.rand(2, 3, 128, 128)
-generator = Generator(args)
-y = generator(y)  # .view(-1, 2, args.image_dimensions[0],
-# args.image_dimensions[1], args.image_dimensions[2])
-print(y.shape)
+# # y = torch.rand(args.cartoon_dimensions).view(-1,
+# #                                              args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
+# y = torch.rand(2, 3, 128, 128)
+# generator = Generator(args)
+# y = generator(y)  # .view(-1, 2, args.image_dimensions[0],
+# # args.image_dimensions[1], args.image_dimensions[2])
+# print(y.shape)
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
