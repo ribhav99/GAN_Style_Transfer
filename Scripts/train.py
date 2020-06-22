@@ -22,10 +22,8 @@ def train(args, wandb=None):
     full_data = get_data_loader(args, train=True)
 
     loss_function = nn.MSELoss()
-    discriminator = Discriminator(
-        args.image_dimensions, args.features_d, args.kernel_size).to(device)
-    generator = Generator(args.cartoon_dimensions, args.image_dimensions, features_g=args.features_g,
-                          kernel_size=args.kernel_size, max_pool=args.max_pool).to(device)
+    discriminator = Discriminator(args).to(device)
+    generator = Generator(args).to(device)
 
     optimiser_d = optim.Adam(discriminator.parameters(),
                              lr=args.dis_learning_rate)
@@ -45,6 +43,8 @@ def train(args, wandb=None):
         for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
             batch_size = human_faces.shape[0]
+            human_faces = human_faces.to(device)
+            cartoon_faces = cartoon_faces.to(device)
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             optimiser_d.zero_grad()
