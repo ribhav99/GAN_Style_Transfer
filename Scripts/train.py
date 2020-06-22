@@ -52,12 +52,12 @@ def train(args, wandb=None):
 
             if epoch % args.discrim_train_f == 0:
                 optimiser_d.zero_grad()
-                labels = torch.ones(batch_size, device=device)
+                labels = torch.ones(1, batch_size, device=device)
                 output_d = discriminator(
                     human_faces).view(-1, batch_size)  # here
                 loss_d_real = loss_function(output_d, labels)
 
-                labels = torch.zeros(batch_size, device=device)
+                labels = torch.zeros(1, batch_size, device=device)
 
                 output_d = discriminator(
                     fake.detach()).view(-1, batch_size)  # here
