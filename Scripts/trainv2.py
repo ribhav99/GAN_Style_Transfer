@@ -17,8 +17,8 @@ def train(args, wandb = None):
     optimiser_g = optim.Adam(generator.parameters(), lr=args.gen_learning_rate)
     
     if args.use_wandb:
-        wandb.watch(discriminator)
-        wandb.watch(generator)
+        wandb.watch(discriminator, log='all')
+        wandb.watch(generator, log = 'all')
 
     discriminator.train()
     generator.train()
