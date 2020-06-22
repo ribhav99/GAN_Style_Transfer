@@ -13,27 +13,25 @@ def train(args, wandb=None):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Preproess data
-# make_human_text_file(args)
-# make_cartoon_text_file(args)
-# split_human_data(args)
-# split_cartoon_data(args)
+    # make_human_text_file(args)
+    # make_cartoon_text_file(args)
+    # split_human_data(args)
+    # split_cartoon_data(args)
 
     # LOAD DATA .......
     full_data = get_data_loader(args, train=True)
 
     loss_function = nn.MSELoss()
-    discriminator = Discriminator(
-        args.image_dimensions, args.features_d, args.kernel_size).to(device)
-    generator = Generator(args.cartoon_dimensions, args.image_dimensions, features_g=args.features_g,
-                          kernel_size=args.kernel_size, max_pool=args.max_pool).to(device)
+    discriminator = Discriminator(args).to(device)
+    generator = Generator(args).to(device)
 
     optimiser_d = optim.Adam(discriminator.parameters(),
                              lr=args.dis_learning_rate)
     optimiser_g = optim.Adam(generator.parameters(), lr=args.gen_learning_rate)
 
     if args.use_wandb:
-        wandb.watch(discriminator)
-        wandb.watch(generator)
+        wandb.watch(discriminator, log='all')
+        wandb.watch(generator, log='all')
 
     discriminator.train()
     generator.train()
@@ -45,6 +43,8 @@ def train(args, wandb=None):
         for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
             batch_size = human_faces.shape[0]
+            human_faces = human_faces.to(device)
+            cartoon_faces = cartoon_faces.to(device)
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             optimiser_d.zero_grad()
@@ -118,22 +118,24 @@ if __name__ == "__main__":
     args = AttrDict()
     args_dict = {
         'dis_learning_rate': 0.001,
-        'gen_learning_rate': 0.001,
+        'gen_learning_rate': 0.004,
+        'image_dimensions': (128, 128, 3),
+        'cartoon_dimensions': (128, 128, 3),
         'batch_size': 64,
         'max_pool': (2, 2),
-        'features_d': 2,
-        'features_g': 2,
+        'features_d': 16,
+        'features_g': 16,
         'num_epochs': 30,
         'kernel_size': 3,
         'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
         'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
         'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
         'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-        'human_data_root_path': "/content/humanfaces/",
+        'human_data_root_path': "/content/humanfaces128/",
         'cartoon_data_root_path': "/content/cartoonfaces/",
         'save_path': "/content/GAN_Style_Transfer/Models",
         'image_save_f': 10,  # i.e save an image every 10 epochs
-        'use_wandb': False
+        'use_wandb': True
     }
     args.update(args_dict)
     train(args)
