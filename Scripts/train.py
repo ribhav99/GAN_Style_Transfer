@@ -80,8 +80,8 @@ def train(args, wandb = None):
         avg_loss_gen = loss_gen /total
         avg_loss_discrim = loss_discrim / total
         if args.use_wandb:
-            wandb.log({"discriminator loss": avg_loss_discrim})
-            wandb.log({"generator loss": avg_loss_gen})
+            wandb.log({"discriminator loss": avg_loss_discrim, 'epoch': epoch + 1})
+            wandb.log({"generator loss": avg_loss_gen, 'epoch': epoch + 1})
         print("Average discriminator loss for epoch {} is {}".format(epoch + 1, avg_loss_discrim))
         print("Average generator loss for epoch {} is {}".format(epoch + 1, avg_loss_gen)) 
         if not args.use_wandb:
