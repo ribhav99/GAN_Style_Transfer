@@ -82,7 +82,7 @@ def train(args, wandb = None):
         if args.use_wandb:
             wandb.log({"discriminator loss": avg_loss_discrim, 'epoch': epoch + 1})
             wandb.log({"generator loss": avg_loss_gen, 'epoch': epoch + 1})
-        print("Average discriminator loss for epoch {} is {}".format(epoch + 1, avg_loss_discrim))
+        print("\nAverage discriminator loss for epoch {} is {}".format(epoch + 1, avg_loss_discrim))
         print("Average generator loss for epoch {} is {}".format(epoch + 1, avg_loss_gen)) 
         if not args.use_wandb:
             torch.save(discriminator.state_dict(), args.save_path + "/{}disciminator-{}.pt".format(datetime.now(), epoch + 1))
