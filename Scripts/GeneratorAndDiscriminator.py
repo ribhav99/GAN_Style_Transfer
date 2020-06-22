@@ -71,11 +71,6 @@ class Generator(nn.Module):
         self.conv3 = nn.Sequential(nn.Conv2d(args.features_g * 2, args.features_g * 4, args.kernel_size,
                                              padding=1), nn.BatchNorm2d(args.features_g * 4), nn.ReLU(), nn.MaxPool2d(args.max_pool))
 
-        # fake_data = torch.rand(args.cartoon_dimensions).view(-1, args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
-        # self.down_conv(fake_data)
-
-        # self.dense1 = nn.Linear(self._linear_dim, args.image_dimensions[0] * args.image_dimensions[1] * args.image_dimensions[2])
-
         self.trans_conv1 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
             args.features_g * 4, args.features_g * 2, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 2), nn.ReLU())
         self.trans_conv2 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
