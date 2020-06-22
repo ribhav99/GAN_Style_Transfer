@@ -13,10 +13,10 @@ def train(args, wandb=None):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Preproess data
-# make_human_text_file(args)
-# make_cartoon_text_file(args)
-# split_human_data(args)
-# split_cartoon_data(args)
+    # make_human_text_file(args)
+    # make_cartoon_text_file(args)
+    # split_human_data(args)
+    # split_cartoon_data(args)
 
     # LOAD DATA .......
     full_data = get_data_loader(args, train=True)
