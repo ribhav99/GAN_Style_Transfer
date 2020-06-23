@@ -23,18 +23,18 @@ class Discriminator(nn.Module):
 
         # only takes in RGB images
         self.conv1 = nn.Sequential(nn.Conv2d(args.image_dimensions[2], args.features_d, args.kernel_size, stride=2, padding=1), nn.BatchNorm2d(
-            args.features_d), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+            args.features_d), args.activation(), args.pool(args.max_pool))
         self.conv2 = nn.Sequential(nn.Conv2d(args.features_d, args.features_d * 2, args.kernel_size, stride=2,
-                                             padding=1), nn.BatchNorm2d(args.features_d * 2), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_d * 2), args.activation(), args.pool(args.max_pool))
         self.conv3 = nn.Sequential(nn.Conv2d(args.features_d * 2, args.features_d * 4, args.kernel_size,
-                                             stride=2, padding=1), nn.BatchNorm2d(args.features_d * 4), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             stride=2, padding=1), nn.BatchNorm2d(args.features_d * 4), args.activation(), args.pool(args.max_pool))
 
         fake_data = torch.rand(args.image_dimensions).view(
             -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
         self.conv(fake_data)
 
         self.linear1 = nn.Sequential(
-            nn.Linear(self._linear_dim, 150), nn.BatchNorm1d(150), nn.LeakyReLU())
+            nn.Linear(self._linear_dim, 150), nn.BatchNorm1d(150), args.activation())
         self.linear2 = nn.Sequential(nn.Linear(150, 1), nn.Sigmoid())
 
     def conv(self, x):
@@ -65,16 +65,16 @@ class Generator(nn.Module):
         self._linear_dim = None
 
         self.conv1 = nn.Sequential(nn.Conv2d(args.cartoon_dimensions[2], args.features_g, args.kernel_size, padding=1), nn.BatchNorm2d(
-            args.features_g), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+            args.features_g), args.activation(), args.pool(args.max_pool))
         self.conv2 = nn.Sequential(nn.Conv2d(args.features_g, args.features_g * 2, args.kernel_size,
-                                             padding=1), nn.BatchNorm2d(args.features_g * 2), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_g * 2), args.activation(), args.pool(args.max_pool))
         self.conv3 = nn.Sequential(nn.Conv2d(args.features_g * 2, args.features_g * 4, args.kernel_size,
-                                             padding=1), nn.BatchNorm2d(args.features_g * 4), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_g * 4), args.activation(), args.pool(args.max_pool))
 
         self.trans_conv1 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            args.features_g * 4, args.features_g * 2, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 2), nn.LeakyReLU())
+            args.features_g * 4, args.features_g * 2, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 2), args.activation())
         self.trans_conv2 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            args.features_g * 2, args.features_g, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g), nn.LeakyReLU())
+            args.features_g * 2, args.features_g, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g), args.activation())
         self.trans_conv3 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
             args.features_g, args.image_dimensions[2], args.kernel_size, padding=1), nn.Tanh())
 

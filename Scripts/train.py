@@ -47,26 +47,27 @@ def train(args, device, wandb=None):
             cartoon_faces = cartoon_faces.to(device)
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
-            fake = generator(cartoon_faces).view(
-                -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
+            fake = generator(cartoon_faces)  # .view(
+            # -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
-            if epoch % args.discrim_train_f == 0:
-                optimiser_d.zero_grad()
-                labels = torch.ones(1, batch_size, device=device)
-                output_d = discriminator(
-                    human_faces).view(-1, batch_size)  # here
-                loss_d_real = loss_function(output_d, labels)
+            if args.discrim_train_f:
+                if epoch % args.discrim_train_f == 0:
+                    optimiser_d.zero_grad()
+                    labels = torch.ones(1, batch_size, device=device)
+                    output_d = discriminator(
+                        human_faces).view(-1, batch_size)  # here
+                    loss_d_real = loss_function(output_d, labels)
 
-                labels = torch.zeros(1, batch_size, device=device)
+                    labels = torch.zeros(1, batch_size, device=device)
 
-                output_d = discriminator(
-                    fake.detach()).view(-1, batch_size)  # here
-                loss_d_fake = loss_function(output_d, labels)
+                    output_d = discriminator(
+                        fake.detach()).view(-1, batch_size)  # here
+                    loss_d_fake = loss_function(output_d, labels)
 
-                loss_d = loss_d_real + loss_d_fake
-                loss_d.backward()
-                optimiser_d.step()
-                loss_discrim += loss_d.item()
+                    loss_d = loss_d_real + loss_d_fake
+                    loss_d.backward()
+                    optimiser_d.step()
+                    loss_discrim += loss_d.item()
 
             # Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
@@ -76,6 +77,26 @@ def train(args, device, wandb=None):
             loss_g.backward()
             optimiser_g.step()
             loss_gen += loss_g.item()
+
+            if args.discrim_error_train:
+                predictions = [1 if i > 0.5 else 0 for i in output]
+                if predictions.count(1) >= args.discrim_error_train * batch_size:
+                    optimiser_d.zero_grad()
+                    labels = torch.ones(1, batch_size, device=device)
+                    output_d = discriminator(
+                        human_faces).view(-1, batch_size)  # here
+                    loss_d_real = loss_function(output_d, labels)
+
+                    labels = torch.zeros(1, batch_size, device=device)
+
+                    output_d = discriminator(
+                        fake.detach()).view(-1, batch_size)  # here
+                    loss_d_fake = loss_function(output_d, labels)
+
+                    loss_d = loss_d_real + loss_d_fake
+                    loss_d.backward()
+                    optimiser_d.step()
+                    loss_discrim += loss_d.item()
 
         if (epoch + 1) % args.image_save_f == 0:
             matrix_of_img = fake.detach()[:10, ...]
@@ -138,7 +159,10 @@ if __name__ == "__main__":
         'cartoon_data_root_path': "/content/cartoonfaces/",
         'save_path': "/content/GAN_Style_Transfer/Models",
         'image_save_f': 1,  # i.e save an image every 1 epochs
-        'discrim_train_f': 5,
+        'discrim_train_f': False,
+        'discrim_error_train': 0.4,
+        'pool': nn.MaxPool2d,
+        'activation': nn.RelU,
         'use_wandb': True
     }
     args.update(args_dict)
