@@ -105,38 +105,46 @@ class Generator(nn.Module):
 
 # args = AttrDict()
 # args_dict = {
-#     'learning_rate': 0.001,
-#     'batch_size': 1,
-#     'image_dimensions': (218, 178, 3),
-#     'cartoon_dimensions': (128, 128, 3),
+#     'dis_learning_rate': 0.001,
+#     'gen_learning_rate': 0.002,
+#     'image_dimensions': (128, 128, 1),
+#     'cartoon_dimensions': (128, 128, 1),
+#     'batch_size': 64,
 #     'max_pool': (2, 2),
-#     'features_d': 16,
-#     'features_g': 16,
+#     'features_d': 64,
+#     'features_g': 64,
 #     'num_epochs': 30,
 #     'kernel_size': 3,
 #     'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
 #     'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
 #     'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
 #     'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-#     'human_data_root_path': "/content/humanfaces/",
+#     'human_data_root_path': "/content/humanfaces128/",
 #     'cartoon_data_root_path': "/content/cartoonfaces/",
 #     'save_path': "/content/GAN_Style_Transfer/Models",
-#     'image_save_f': 10,  # i.e save an image every 10 epochs
-#     'use_wandb': False
+#     'image_save_f': 1,  # i.e save an image every 1 epochs
+#     'discrim_train_f': False,
+#     'discrim_error_train': 0.4,
+#     'pool': nn.MaxPool2d,
+#     'activation': nn.ReLU,
+#     'use_wandb': True
 # }
 # args.update(args_dict)
 
 
 # # x = torch.rand(args.image_dimensions).view(-1, 3,
 # #                                            args.image_dimensions[0], args.image_dimensions[1])
-# x = torch.rand(2, 3, 218, 178)
+# x = torch.rand(2, 1, 128, 128)
 
 # disciminator = Discriminator(args)
-# print(disciminator(x))
+# x = disciminator(x)
+# predictions = [1 if i > 0.5 else 0 for i in x]
+# print(predictions)
+# print(x)
 
 # # y = torch.rand(args.cartoon_dimensions).view(-1,
 # #                                              args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
-# y = torch.rand(2, 3, 128, 128)
+# y = torch.rand(2, 1, 128, 128)
 # generator = Generator(args)
 # y = generator(y)  # .view(-1, 2, args.image_dimensions[0],
 # # args.image_dimensions[1], args.image_dimensions[2])

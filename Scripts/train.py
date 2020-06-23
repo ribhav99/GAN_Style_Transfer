@@ -80,6 +80,7 @@ def train(args, device, wandb=None):
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             if args.discrim_error_train:
+                output = discriminator(fake).view(-1, batch_size)
                 predictions = [1 if i > 0.5 else 0 for i in output]
                 if predictions.count(1) >= args.discrim_error_train * batch_size:
                     optimiser_d.zero_grad()
@@ -165,7 +166,7 @@ if __name__ == "__main__":
         'discrim_train_f': False,
         'discrim_error_train': 0.4,
         'pool': nn.MaxPool2d,
-        'activation': nn.RelU,
+        'activation': nn.ReLU,
         'use_wandb': True
     }
     args.update(args_dict)
