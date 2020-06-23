@@ -32,7 +32,7 @@ class GANDataset(Dataset):
         if len(image.shape) == 3:
             image = np.moveaxis(image,-1,0)
         elif len(image.shape) == 2:
-            image = np.expand_dims(x, axis=0) 
+            image = np.expand_dims(image, axis=0) 
         return torch.from_numpy(image).float().to(device)
 
     def __getitem__(self,idx):
