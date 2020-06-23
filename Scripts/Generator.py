@@ -16,13 +16,13 @@ def init_downconv(input_channel, second_channel, num_layers):
 class Generator(nn.Module):
     def __init__(self, args=None):
         super(Generator, self).__init__()
-        self.downconv = init_downconv(3, 16, 3)
+        self.downconv = init_downconv(1, 8, 3)
         self.upconv1 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            64, 32, 3, padding=1), nn.BatchNorm2d(32), nn.ReLU())
-        self.upconv2 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
             32, 16, 3, padding=1), nn.BatchNorm2d(16), nn.ReLU())
+        self.upconv2 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
+            16, 8, 3, padding=1), nn.BatchNorm2d(8), nn.ReLU())
         self.upconv3 = nn.Sequential(nn.Upsample(
-            scale_factor=2), nn.ConvTranspose2d(16, 3, 3, padding=1), nn.Tanh())
+            scale_factor=2), nn.ConvTranspose2d(8, 1, 3, padding=1), nn.Tanh())
 
     def forward(self, x):
         x = self.downconv(x)

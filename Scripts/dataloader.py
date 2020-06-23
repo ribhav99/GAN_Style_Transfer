@@ -23,12 +23,16 @@ class GANDataset(Dataset):
 
     def __len__(self):
         return len(self.human_array)
+
     def load(self,root_dir , idstr):
         img_name = os.path.join(root_dir, idstr)
         image = io.imread(img_name)
         if self.transform:
             image = self.transform(image)
-        image = np.moveaxis(image,-1,0)
+        if len(image.shape) == 3:
+            image = np.moveaxis(image,-1,0)
+        elif len(image.shape) == 2:
+            image = np.expand_dims(x, axis=0) 
         return torch.from_numpy(image).float().to(device)
 
     def __getitem__(self,idx):
