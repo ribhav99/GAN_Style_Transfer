@@ -50,5 +50,6 @@ args_dict = {
         'use_wandb': True
     }
 rosy-terrain-15
+dark-energy-18
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
