@@ -73,6 +73,7 @@ def train(args, device, wandb=None):
             optimiser_g.zero_grad()
             labels = torch.ones(1, batch_size, device=device)
             output = discriminator(fake).view(-1, batch_size)
+            print(output)  # HEREEEEXXXXXXXXXXXXXXXXXXXX
             predictions = [1 if i > 0.5 else 0 for i in output]
             loss_g = loss_function(output, labels)
             loss_g.backward()
