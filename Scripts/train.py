@@ -73,8 +73,7 @@ def train(args, device, wandb=None):
             optimiser_g.zero_grad()
             labels = torch.ones(1, batch_size, device=device)
             output = discriminator(fake).view(-1, batch_size)
-            print(output)  # HEREEEEXXXXXXXXXXXXXXXXXXXX
-            predictions = [1 if i > 0.5 else 0 for i in output]
+            predictions = len(output[output >= 0.5]) / batch_size
             loss_g = loss_function(output, labels)
             loss_g.backward()
             optimiser_g.step()
@@ -82,7 +81,7 @@ def train(args, device, wandb=None):
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             if args.discrim_error_train:
-                if predictions.count(1) >= args.discrim_error_train * batch_size:
+                if predictions >= args.discrim_error_train * batch_size:
                     optimiser_d.zero_grad()
                     labels = torch.ones(1, batch_size, device=device)
                     output_d = discriminator(
