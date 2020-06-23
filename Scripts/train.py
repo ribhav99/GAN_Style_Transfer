@@ -47,28 +47,31 @@ def train(args, wandb=None):
             cartoon_faces = cartoon_faces.to(device)
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
-            optimiser_d.zero_grad()
-            labels = torch.ones(batch_size, device=device)
-            output_d = discriminator(human_faces).reshape(-1)
-            loss_d_real = loss_function(output_d, labels)
-
             fake = generator(cartoon_faces).view(
                 -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
-            labels = torch.zeros(batch_size, device=device)
+            if epoch % args.discrim_train_f == 0:
+                optimiser_d.zero_grad()
+                labels = torch.ones(1, batch_size, device=device)
+                output_d = discriminator(
+                    human_faces).view(-1, batch_size)  # here
+                loss_d_real = loss_function(output_d, labels)
 
-            output_d = discriminator(fake.detach()).reshape(-1)
-            loss_d_fake = loss_function(output_d, labels)
+                labels = torch.zeros(1, batch_size, device=device)
 
-            loss_d = loss_d_real + loss_d_fake
-            loss_d.backward()
-            optimiser_d.step()
-            loss_discrim += loss_d.item()
+                output_d = discriminator(
+                    fake.detach()).view(-1, batch_size)  # here
+                loss_d_fake = loss_function(output_d, labels)
+
+                loss_d = loss_d_real + loss_d_fake
+                loss_d.backward()
+                optimiser_d.step()
+                loss_discrim += loss_d.item()
 
             # Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
-            labels = torch.ones(batch_size, device=device)
-            output = discriminator(fake).reshape(-1)
+            labels = torch.ones(1, batch_size, device=device)
+            output = discriminator(fake).view(-1, batch_size)  # here
             loss_g = loss_function(output, labels)
             loss_g.backward()
             optimiser_g.step()
@@ -118,7 +121,7 @@ if __name__ == "__main__":
     args = AttrDict()
     args_dict = {
         'dis_learning_rate': 0.001,
-        'gen_learning_rate': 0.004,
+        'gen_learning_rate': 0.002,
         'image_dimensions': (128, 128, 3),
         'cartoon_dimensions': (128, 128, 3),
         'batch_size': 64,
@@ -134,7 +137,8 @@ if __name__ == "__main__":
         'human_data_root_path': "/content/humanfaces128/",
         'cartoon_data_root_path': "/content/cartoonfaces/",
         'save_path': "/content/GAN_Style_Transfer/Models",
-        'image_save_f': 10,  # i.e save an image every 10 epochs
+        'image_save_f': 1,  # i.e save an image every 1 epochs
+        'discrim_train_f': 5,
         'use_wandb': True
     }
     args.update(args_dict)
