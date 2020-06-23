@@ -89,7 +89,7 @@ def train(args, wandb=None):
             del matrix_of_img
         total = batch_num + 1
         avg_loss_gen = loss_gen / total
-        avg_loss_discrim = loss_discrim*args.discrim_train_f / total
+        avg_loss_discrim = loss_discrim*args.discrim_train_fgi / total
         if args.use_wandb:
             wandb.log(
                 {"discriminator loss": avg_loss_discrim, 'epoch': epoch + 1})
