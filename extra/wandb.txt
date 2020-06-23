@@ -56,10 +56,10 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 args_dict = {
         'dis_learning_rate': 0.001,
-        'gen_learning_rate': 0.003,
+        'gen_learning_rate': 0.002,
         'image_dimensions': (128, 128, 1),
         'cartoon_dimensions': (128, 128, 1),
-        'batch_size': 32,
+        'batch_size': 64,
         'max_pool': (2, 2),
         'features_d': 64,
         'features_g': 64,
@@ -69,11 +69,14 @@ args_dict = {
         'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
         'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
         'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-        'human_data_root_path': "/content/humangray128/",
-        'cartoon_data_root_path': "/content/cartoonfacesgray/",
+        'human_data_root_path': "/content/humanfaces128/",
+        'cartoon_data_root_path': "/content/cartoonfaces/",
         'save_path': "/content/GAN_Style_Transfer/Models",
         'image_save_f': 1,  # i.e save an image every 1 epochs
-        'discrim_train_f': 3,
+        'discrim_train_f': False,
+        'discrim_error_train': 0.4,
+        'pool': nn.MaxPool2d,
+        'activation': nn.RelU,
         'use_wandb': True
     }
 

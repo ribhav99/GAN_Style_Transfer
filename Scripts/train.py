@@ -78,6 +78,7 @@ def train(args, device, wandb=None):
             optimiser_g.step()
             loss_gen += loss_g.item()
 
+            # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             if args.discrim_error_train:
                 predictions = [1 if i > 0.5 else 0 for i in output]
                 if predictions.count(1) >= args.discrim_error_train * batch_size:
@@ -97,6 +98,8 @@ def train(args, device, wandb=None):
                     loss_d.backward()
                     optimiser_d.step()
                     loss_discrim += loss_d.item()
+
+        # Training for the epoch is done
 
         if (epoch + 1) % args.image_save_f == 0:
             matrix_of_img = fake.detach()[:10, ...]
