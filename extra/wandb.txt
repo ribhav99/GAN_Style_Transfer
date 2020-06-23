@@ -50,6 +50,6 @@ args_dict = {
         'use_wandb': True
     }
 rosy-terrain-15
-dark-energy-18
+quiet-frost-19 -- LeakyRelU and AvgPool2d
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
