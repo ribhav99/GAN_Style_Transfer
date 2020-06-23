@@ -47,8 +47,7 @@ def train(args, device, wandb=None):
             cartoon_faces = cartoon_faces.to(device)
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
-            fake = generator(cartoon_faces)  # .view(
-            # -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
+            fake = generator(cartoon_faces)
 
             if args.discrim_train_f:
                 if epoch % args.discrim_train_f == 0:
