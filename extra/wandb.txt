@@ -59,7 +59,7 @@ args_dict = {
         'gen_learning_rate': 0.003,
         'image_dimensions': (128, 128, 1),
         'cartoon_dimensions': (128, 128, 1),
-        'batch_size': 64,
+        'batch_size': 32,
         'max_pool': (2, 2),
         'features_d': 64,
         'features_g': 64,
