@@ -47,8 +47,8 @@ def train(args, device, wandb=None):
             cartoon_faces = cartoon_faces.to(device)
 
             # normalise values between -1 and 1
-            human_faces = (human_faces - 127.5)/127.5
-            cartoon_faces = (cartoon_faces - 127.5)/127.5
+            # human_faces = (human_faces - 127.5)/127.5
+            # cartoon_faces = (cartoon_faces - 127.5)/127.5
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             fake = generator(cartoon_faces)
