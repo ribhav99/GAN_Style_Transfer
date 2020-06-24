@@ -46,6 +46,10 @@ def train(args, device, wandb=None):
             human_faces = human_faces.to(device)
             cartoon_faces = cartoon_faces.to(device)
 
+            # normalise values between -1 and 1
+            human_faces = (human_faces - 127.5)/127.5
+            cartoon_faces = (cartoon_faces - 127.5)/127.5
+
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             fake = generator(cartoon_faces)
 
@@ -147,24 +151,24 @@ if __name__ == "__main__":
         'gen_learning_rate': 0.002,
         'image_dimensions': (128, 128, 1),
         'cartoon_dimensions': (128, 128, 1),
-        'batch_size': 64,
+        'batch_size': 100,
         'max_pool': (2, 2),
         'features_d': 64,
         'features_g': 64,
-        'num_epochs': 30,
+        'num_epochs': 85,
         'kernel_size': 3,
         'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
         'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
         'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
         'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-        'human_data_root_path': "/content/humanfaces128/",
-        'cartoon_data_root_path': "/content/cartoonfaces/",
+        'human_data_root_path': "/content/humangray128/",
+        'cartoon_data_root_path': "/content/cartoonfacesgray/",
         'save_path': "/content/GAN_Style_Transfer/Models",
         'image_save_f': 1,  # i.e save an image every 1 epochs
-        'discrim_train_f': False,
-        'discrim_error_train': 0.4,
-        'pool': nn.MaxPool2d,
-        'activation': nn.ReLU,
+        'discrim_train_f': 3,
+        'discrim_error_train': False,
+        'pool': nn.AvgPool2d,
+        'activation': nn.LeakyReLU,
         'use_wandb': True
     }
     args.update(args_dict)
