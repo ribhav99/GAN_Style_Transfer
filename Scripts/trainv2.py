@@ -52,9 +52,7 @@ def train(args, wandb = None):
             matrix_of_img = fake_images.detach()[:10,...]
             if args.use_wandb:
                 name = "examples " + "epoch " + str(epoch + 1)
-                cartoon_name = "cartoon_faces" + "epoch" + str(epoch + 1)
                 wandb.log({name : [wandb.Image(matrix_of_img[i]) for i in range(10)]})
-                wandb.log({"cartoon_faces" : [wandb.Image(cartoon_faces[i]) for i in range(10)]})
             del matrix_of_img
         total = batch_num + 1
         avg_loss_gen = loss_gen /total
