@@ -56,6 +56,7 @@ def train(args, device, wandb=None):
             if args.discrim_train_f:
                 if epoch % args.discrim_train_f == 0:
                     optimiser_d.zero_grad()
+                    optimiser_g.zero_grad()
                     labels = torch.ones(1, batch_size, device=device)
                     output_d = discriminator(
                         human_faces).view(-1, batch_size)  # here
@@ -74,6 +75,7 @@ def train(args, device, wandb=None):
 
             # Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
+            optimiser_d.zero_grad()
             labels = torch.ones(1, batch_size, device=device)
             output = discriminator(fake).view(-1, batch_size)
             predictions = len(output[output >= 0.5]) / batch_size
@@ -86,6 +88,7 @@ def train(args, device, wandb=None):
             if args.discrim_error_train:
                 if predictions >= args.discrim_error_train * batch_size:
                     optimiser_d.zero_grad()
+                    optimiser_g.zero_grad()
                     labels = torch.ones(1, batch_size, device=device)
                     output_d = discriminator(
                         human_faces).view(-1, batch_size)  # here
