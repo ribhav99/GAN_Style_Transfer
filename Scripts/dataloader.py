@@ -1,4 +1,5 @@
 import torch
+from skimage import img_as_float
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 import os
@@ -27,6 +28,7 @@ class GANDataset(Dataset):
     def load(self,root_dir , idstr):
         img_name = os.path.join(root_dir, idstr)
         image = io.imread(img_name)
+        image = img_as_float(image)
         if self.transform:
             image = self.transform(image)
         if len(image.shape) == 3:
