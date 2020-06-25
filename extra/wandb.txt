@@ -114,4 +114,5 @@ usual-shape-29 --discrim_error_train 0.2
 honest-totem-30 --discrim_error_train False --discrim_train_f 4
 scarlet-pine-31 --discrim_error_train False --discrim_train_f 4
 icy-microwave-37 --pool nnAvg --activation Leaky
+lucky-waterfall-38 --normalised images bw -1 and 1
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
