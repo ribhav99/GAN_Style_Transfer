@@ -15,7 +15,8 @@ def train(args, wandb = None):
     generator = Generator().to(device)
     optimiser_d = optim.Adam(discriminator.parameters(), lr=args.dis_learning_rate)
     optimiser_g = optim.Adam(generator.parameters(), lr=args.gen_learning_rate)
-    
+    dis_schedule = optim.lr_scheduler.CosineAnnealingLR(optimiser_d, args.num_epochs)
+    gen_schedule = optim.lr_scheduler.CosineAnnealingLR(optimiser_g, args.num_epochs)
     if args.use_wandb:
         wandb.watch(discriminator, log='all')
         wandb.watch(generator, log = 'all')
@@ -48,6 +49,8 @@ def train(args, wandb = None):
             loss_g.backward()
             optimiser_g.step()
             loss_gen += loss_g.item()
+        dis_schedule.step()
+        gen_schedule.step()
         if (epoch + 1) % args.image_save_f == 0: 
             matrix_of_img = fake_images.detach()[:10,...]
             if args.use_wandb:
