@@ -1,3 +1,5 @@
+WAS TRAINING DIS EVERY x EPOCHS NOT BATCHES...
+
 args_dict = {
         'dis_learning_rate': 0.001,
         'gen_learning_rate': 0.004,
@@ -116,3 +118,33 @@ scarlet-pine-31 --discrim_error_train False --discrim_train_f 4
 icy-microwave-37 --pool nnAvg --activation Leaky
 lucky-waterfall-38 --normalised images bw -1 and 1
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+TRAINING DIS EVERY x BATCHES INSTEAD OF EPOCHS
+
+args_dict = {
+        'dis_learning_rate': 0.001,
+        'gen_learning_rate': 0.005,
+        'image_dimensions': (128, 128, 1),
+        'cartoon_dimensions': (128, 128, 1),
+        'batch_size': 100,
+        'max_pool': (2, 2),
+        'features_d': 64,
+        'features_g': 64,
+        'num_epochs': 40,
+        'kernel_size': 3,
+        'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
+        'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
+        'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
+        'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
+        'human_data_root_path': "/content/humangray128/",
+        'cartoon_data_root_path': "/content/cartoonfacesgray/",
+        'save_path': "/content/GAN_Style_Transfer/Models",
+        'image_save_f': 1,  # i.e save an image every 1 epochs
+        'discrim_train_f': 3,
+        'discrim_error_train': False,
+        'pool': nn.AvgPool2d,
+        'activation': nn.LeakyReLU,
+        'use_wandb': True
+    }
+    
+whole-glade-41
