@@ -40,6 +40,8 @@ def train(args, device, wandb=None):
     for epoch in trange(args.num_epochs):
         loss_gen = 0.0
         loss_discrim = 0.0
+        total_dis = 0
+        total_gen = 0
         for batch_num, data in enumerate(full_data):
             human_faces, cartoon_faces = data
             batch_size = human_faces.shape[0]
@@ -64,19 +66,20 @@ def train(args, device, wandb=None):
                     optimiser_g.zero_grad()
                     labels = torch.ones(1, batch_size, device=device)
                     output_d = discriminator(
-                        human_faces).view(-1, batch_size)  # here
+                        human_faces).view(-1, batch_size)
                     loss_d_real = loss_function(output_d, labels)
 
                     labels = torch.zeros(1, batch_size, device=device)
 
                     output_d = discriminator(
-                        fake.detach()).view(-1, batch_size)  # here
+                        fake.detach()).view(-1, batch_size)
                     loss_d_fake = loss_function(output_d, labels)
 
                     loss_d = loss_d_real + loss_d_fake
                     loss_d.backward()
                     optimiser_d.step()
                     loss_discrim += loss_d.item()
+                    total_dis += 1
 
             # Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
@@ -88,6 +91,7 @@ def train(args, device, wandb=None):
             loss_g.backward()
             optimiser_g.step()
             loss_gen += loss_g.item()
+            total_gen += 1
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             if args.discrim_error_train:
@@ -109,6 +113,7 @@ def train(args, device, wandb=None):
                     loss_d.backward()
                     optimiser_d.step()
                     loss_discrim += loss_d.item()
+                    total_dis += 1
 
         # Training for the epoch is done
 
@@ -122,9 +127,8 @@ def train(args, device, wandb=None):
                 # insert your plotting code here
                 pass
             del matrix_of_img
-        total = batch_num + 1
-        avg_loss_gen = loss_gen / total
-        avg_loss_discrim = loss_discrim*args.discrim_train_f / total
+        avg_loss_gen = loss_gen / total_gen
+        avg_loss_discrim = loss_discrim / total_dis
         if args.use_wandb:
             wandb.log(
                 {"discriminator loss": avg_loss_discrim, 'epoch': epoch + 1})
