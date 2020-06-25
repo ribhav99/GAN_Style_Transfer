@@ -61,7 +61,7 @@ def train(args, device, wandb=None):
             #     print(fake)
 
             if args.discrim_train_f:
-                if epoch % args.discrim_train_f == 0:
+                if batch_num % args.discrim_train_f == 0:
                     optimiser_d.zero_grad()
                     optimiser_g.zero_grad()
                     labels = torch.ones(1, batch_size, device=device)
