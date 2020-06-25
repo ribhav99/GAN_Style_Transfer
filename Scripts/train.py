@@ -48,10 +48,9 @@ def train(args, device, wandb=None):
 
             # normalise values between -1 and 1
             human_faces = (human_faces - 127.5)/127.5
-            cartoon_faces = (cartoon_faces - 127.5)/127.5
+            #cartoon_faces = (cartoon_faces - 127.5)/127.5
             if batch_num % 50 == 0:
-                print("HUMAN FACE:", human_faces, "\n\n\n\n\n")
-            if batch_num - 1 % 50 == 0:
+                #print("HUMAN FACE:", human_faces, "\n\n\n\n\n")
                 print("CARTOON FACE:", cartoon_faces, "\n\n\n\n\n")
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
