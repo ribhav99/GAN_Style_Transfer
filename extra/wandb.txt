@@ -146,5 +146,6 @@ args_dict = {
         'activation': nn.LeakyReLU,
         'use_wandb': True
     }
-    
+
 whole-glade-41
+laced-thunder-42 --not sure what I did

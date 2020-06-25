@@ -84,7 +84,8 @@ def train(args, device, wandb=None):
             # Generator: max log(D(G(z)))
             optimiser_g.zero_grad()
             optimiser_d.zero_grad()
-            labels = torch.ones(1, batch_size, device=device)
+            # MADE THIS ZEROS JUST FOR SHITS AND GIGGLES
+            labels = torch.zeros(1, batch_size, device=device)
             output = discriminator(fake).view(-1, batch_size)
             predictions = len(output[output >= 0.5]) / batch_size
             loss_g = loss_function(output, labels)
