@@ -55,8 +55,8 @@ def train(args, device, wandb=None):
 
             # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             fake = generator(cartoon_faces)
-            if batch_num % 50 == 0:
-                print(fake)
+            # if batch_num % 50 == 0:
+            #     print(fake)
 
             if args.discrim_train_f:
                 if epoch % args.discrim_train_f == 0:
