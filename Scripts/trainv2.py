@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from Generator import Generator
 from Discriminator import Discriminator
-from dataloader import get_data_loader
+from dataloaderv2 import get_data_loader
 from tqdm import tqdm, trange
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
