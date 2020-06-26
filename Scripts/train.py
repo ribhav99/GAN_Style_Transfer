@@ -83,22 +83,10 @@ def train(args, device, wandb=None):
                     loss_discrim += loss_d.item()
                     total_dis += 1
 
-            # Generator: max log(D(G(z)))
-            optimiser_g.zero_grad()
-            optimiser_d.zero_grad()
-            # MADE THIS ZEROS JUST FOR SHITS AND GIGGLES
-            labels = torch.zeros(
-                1, batch_size, device=device) * args.label_smoothing
-            output = discriminator(fake).view(-1, batch_size)
-            predictions = len(output[output >= 0.5]) / batch_size
-            loss_g = loss_function(output, labels)
-            loss_g.backward()
-            optimiser_g.step()
-            loss_gen += loss_g.item()
-            total_gen += 1
-
-            # Discriminator: max log(D(x)) + log(1 - D(G(z)))
             if args.discrim_error_train:
+                output_d = discriminator(
+                    fake.detach()).view(-1, batch_size)
+                predictions = len(output_d[output_d >= 0.5]) / batch_size
                 if predictions >= args.discrim_error_train * batch_size:
                     optimiser_d.zero_grad()
                     optimiser_g.zero_grad()
@@ -120,6 +108,21 @@ def train(args, device, wandb=None):
                     optimiser_d.step()
                     loss_discrim += loss_d.item()
                     total_dis += 1
+
+            # Generator: max log(D(G(z)))
+            optimiser_g.zero_grad()
+            optimiser_d.zero_grad()
+            # MADE THIS ZEROS JUST FOR SHITS AND GIGGLES
+            labels = torch.zeros(
+                1, batch_size, device=device) * args.label_smoothing
+            output = discriminator(fake).view(-1, batch_size)
+            loss_g = loss_function(output, labels)
+            loss_g.backward()
+            optimiser_g.step()
+            loss_gen += loss_g.item()
+            total_gen += 1
+
+            # Discriminator: max log(D(x)) + log(1 - D(G(z)))
 
         # Training for the epoch is done
 
