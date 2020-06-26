@@ -64,12 +64,14 @@ def train(args, device, wandb=None):
                 if batch_num % args.discrim_train_f == 0:
                     optimiser_d.zero_grad()
                     optimiser_g.zero_grad()
-                    labels = torch.ones(1, batch_size, device=device)
+                    labels = torch.ones(
+                        1, batch_size, device=device) * (1 - args.label_smoothing)
                     output_d = discriminator(
                         human_faces).view(-1, batch_size)
                     loss_d_real = loss_function(output_d, labels)
 
-                    labels = torch.zeros(1, batch_size, device=device)
+                    labels = torch.zeros(
+                        1, batch_size, device=device) * args.label_smoothing
 
                     output_d = discriminator(
                         fake.detach()).view(-1, batch_size)
@@ -85,7 +87,8 @@ def train(args, device, wandb=None):
             optimiser_g.zero_grad()
             optimiser_d.zero_grad()
             # MADE THIS ZEROS JUST FOR SHITS AND GIGGLES
-            labels = torch.zeros(1, batch_size, device=device)
+            labels = torch.zeros(
+                1, batch_size, device=device) * args.label_smoothing
             output = discriminator(fake).view(-1, batch_size)
             predictions = len(output[output >= 0.5]) / batch_size
             loss_g = loss_function(output, labels)
@@ -99,12 +102,14 @@ def train(args, device, wandb=None):
                 if predictions >= args.discrim_error_train * batch_size:
                     optimiser_d.zero_grad()
                     optimiser_g.zero_grad()
-                    labels = torch.ones(1, batch_size, device=device)
+                    labels = torch.ones(
+                        1, batch_size, device=device) * (1 - args.label_smoothing)
                     output_d = discriminator(
                         human_faces).view(-1, batch_size)  # here
                     loss_d_real = loss_function(output_d, labels)
 
-                    labels = torch.zeros(1, batch_size, device=device)
+                    labels = torch.zeros(
+                        1, batch_size, device=device) * args.label_smoothing
 
                     output_d = discriminator(
                         fake.detach()).view(-1, batch_size)  # here
@@ -170,6 +175,7 @@ if __name__ == "__main__":
         'features_g': 64,
         'num_epochs': 85,
         'kernel_size': 3,
+        'label_smoothing': 0.1,
         'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
         'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
         'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",

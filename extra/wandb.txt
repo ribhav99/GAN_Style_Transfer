@@ -152,4 +152,4 @@ laced-thunder-42 --not sure what I did
 magic-blaze-43 --targets for gen zeros instead of ones
 colourful-sun-44 --^ --dis_learning_rate 0.003
 feasible-bird-45 --^^ --dis_learning_rate 0.002 --gen_learning_rate 0.002
---^ --dis_learning_rate 0.01 --gen_learning_rate 0.01 --featured_d=g=128
+mild_snowball_46 --^ --dis_learning_rate 0.01 --gen_learning_rate 0.01 --featured_d=g=128
