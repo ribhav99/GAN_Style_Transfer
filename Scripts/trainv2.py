@@ -65,7 +65,7 @@ def train(args, wandb = None):
             wandb.log({"discriminator loss": avg_loss_discrim, 'epoch': epoch + 1})
             print("\nAverage discriminator loss for epoch {} is {}".format(epoch + 1, avg_loss_discrim))
         if total_gen_trained != 0:
-            avg_gen_loss = loss_gen / total_gen_trained
+            avg_loss_gen = loss_gen / total_gen_trained
             wandb.log({"generator loss": avg_loss_gen, 'epoch': epoch + 1})
             print("Average generator loss for epoch {} is {}".format(epoch + 1, avg_loss_gen)) 
     if args.use_wandb:
