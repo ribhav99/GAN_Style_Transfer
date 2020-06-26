@@ -51,6 +51,7 @@ def train(args, wandb = None):
                 loss_g.backward()
                 optimiser_g.step()
                 loss_gen += loss_g.item()
+                total_gen_trained += 1
         dis_schedule.step()
         gen_schedule.step()
         if (epoch + 1) % args.image_save_f == 0: 
