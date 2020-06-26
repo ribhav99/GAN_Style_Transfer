@@ -72,9 +72,6 @@ def train(args, wandb = None):
         torch.save(generator.state_dict(), "generator.pt")
         wandb.save("discriminator.pt")
         wandb.save("generator.pt")
-    else:
-        torch.save(discriminator.state_dict(), args.save_path + "/disciminator-{}-FINAL.pt".format(datetime.now()))
-        torch.save(generator.state_dict(), args.save_path + "/generator-{}-FINAL.pt".format(datetime.now()))
 
 if __name__ == "__main__":
     #these are the ones we have to change most likely
@@ -88,14 +85,12 @@ if __name__ == "__main__":
     'gen_learning_rate': 0.001,
     'batch_size' : 64,
     'num_epochs' : 30,
-    'kernel_size' : 3,
     'human_train_path' : "/content/GAN_Style_Transfer/data/human_train.txt",
     'human_test_path' : "/content/GAN_Style_Transfer/data/human_test.txt",
     'cartoon_train_path' : "/content/GAN_Style_Transfer/data/cartoon_train.txt",
     'cartoon_test_path' : "/content/GAN_Style_Transfer/data/cartoon_test.txt",
     'human_data_root_path' : "/content/humanfaces/",
     'cartoon_data_root_path' : "/content/cartoonfaces/",
-    'save_path' : "/content/GAN_Style_Transfer/Models",
     'image_save_f' : 1, #i.e save an image every 10 epochs
     'act_fn' : 'relu',
     'pool_type' : 'max',
