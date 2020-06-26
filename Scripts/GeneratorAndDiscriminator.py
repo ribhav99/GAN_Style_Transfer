@@ -23,18 +23,18 @@ class Discriminator(nn.Module):
 
         # only takes in RGB images
         self.conv1 = nn.Sequential(nn.Conv2d(args.image_dimensions[2], args.features_d, args.kernel_size, stride=2, padding=1), nn.BatchNorm2d(
-            args.features_d), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+            args.features_d), args.activation(), args.pool(args.max_pool))
         self.conv2 = nn.Sequential(nn.Conv2d(args.features_d, args.features_d * 2, args.kernel_size, stride=2,
-                                             padding=1), nn.BatchNorm2d(args.features_d * 2), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_d * 2), args.activation(), args.pool(args.max_pool))
         self.conv3 = nn.Sequential(nn.Conv2d(args.features_d * 2, args.features_d * 4, args.kernel_size,
-                                             stride=2, padding=1), nn.BatchNorm2d(args.features_d * 4), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             stride=2, padding=1), nn.BatchNorm2d(args.features_d * 4), args.activation(), args.pool(args.max_pool))
 
         fake_data = torch.rand(args.image_dimensions).view(
             -1, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
         self.conv(fake_data)
 
         self.linear1 = nn.Sequential(
-            nn.Linear(self._linear_dim, 150), nn.BatchNorm1d(150), nn.LeakyReLU())
+            nn.Linear(self._linear_dim, 150), nn.BatchNorm1d(150), args.activation())
         self.linear2 = nn.Sequential(nn.Linear(150, 1), nn.Sigmoid())
 
     def conv(self, x):
@@ -65,27 +65,27 @@ class Generator(nn.Module):
         self._linear_dim = None
 
         self.conv1 = nn.Sequential(nn.Conv2d(args.cartoon_dimensions[2], args.features_g, args.kernel_size, padding=1), nn.BatchNorm2d(
-            args.features_g), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+            args.features_g), args.activation(), args.pool(args.max_pool))
         self.conv2 = nn.Sequential(nn.Conv2d(args.features_g, args.features_g * 2, args.kernel_size,
-                                             padding=1), nn.BatchNorm2d(args.features_g * 2), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_g * 2), args.activation(), args.pool(args.max_pool))
         self.conv3 = nn.Sequential(nn.Conv2d(args.features_g * 2, args.features_g * 4, args.kernel_size,
-                                             padding=1), nn.BatchNorm2d(args.features_g * 4), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_g * 4), args.activation(), args.pool(args.max_pool))
         self.conv4 = nn.Sequential(nn.Conv2d(args.features_g * 4, args.features_g * 8, args.kernel_size,
-                                             padding=1), nn.BatchNorm2d(args.features_g * 8), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_g * 8), args.activation(), args.pool(args.max_pool))
         self.conv5 = nn.Sequential(nn.Conv2d(args.features_g * 8, args.features_g * 16, args.kernel_size,
-                                             padding=1), nn.BatchNorm2d(args.features_g * 16), nn.LeakyReLU(), nn.AvgPool2d(args.max_pool))
+                                             padding=1), nn.BatchNorm2d(args.features_g * 16), args.activation(), args.pool(args.max_pool))
 
         self.trans_conv1 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            args.features_g * 16, args.features_g * 8, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 8), nn.LeakyReLU())
+            args.features_g * 16, args.features_g * 8, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 8), args.activation())
 
         self.trans_conv2 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            args.features_g * 8, args.features_g * 4, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 4), nn.LeakyReLU())
+            args.features_g * 8, args.features_g * 4, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 4), args.activation())
 
         self.trans_conv3 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            args.features_g * 4, args.features_g * 2, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 2), nn.LeakyReLU())
+            args.features_g * 4, args.features_g * 2, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g * 2), args.activation())
 
         self.trans_conv4 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            args.features_g * 2, args.features_g, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g), nn.LeakyReLU())
+            args.features_g * 2, args.features_g, args.kernel_size, padding=1), nn.BatchNorm2d(args.features_g), args.activation())
 
         self.trans_conv5 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
             args.features_g, args.image_dimensions[2], args.kernel_size, padding=1), nn.Tanh())
@@ -119,46 +119,46 @@ class Generator(nn.Module):
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # THESE VALUES FOR TESTING. REMOVE THEM
 
-args = AttrDict()
-args_dict = {
-    'dis_learning_rate': 0.001,
-    'gen_learning_rate': 0.002,
-    'image_dimensions': (128, 128, 1),
-    'cartoon_dimensions': (128, 128, 1),
-    'batch_size': 2,
-    'max_pool': (2, 2),
-    'features_d': 64,
-    'features_g': 64,
-    'num_epochs': 85,
-    'kernel_size': 3,
-    'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
-    'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
-    'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
-    'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-    'human_data_root_path': "/content/humangray128/",
-    'cartoon_data_root_path': "/content/cartoonfacesgray/",
-    'save_path': "/content/GAN_Style_Transfer/Models",
-    'image_save_f': 1,
-    'discrim_train_f': 3,
-    'discrim_error_train': False,
-    'pool': nn.AvgPool2d,
-    'activation': nn.LeakyReLU,
-    'use_wandb': True
-}
-args.update(args_dict)
+# args = AttrDict()
+# args_dict = {
+#     'dis_learning_rate': 0.001,
+#     'gen_learning_rate': 0.002,
+#     'image_dimensions': (128, 128, 1),
+#     'cartoon_dimensions': (128, 128, 1),
+#     'batch_size': 2,
+#     'max_pool': (2, 2),
+#     'features_d': 64,
+#     'features_g': 64,
+#     'num_epochs': 85,
+#     'kernel_size': 3,
+#     'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
+#     'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
+#     'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
+#     'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
+#     'human_data_root_path': "/content/humangray128/",
+#     'cartoon_data_root_path': "/content/cartoonfacesgray/",
+#     'save_path': "/content/GAN_Style_Transfer/Models",
+#     'image_save_f': 1,
+#     'discrim_train_f': 3,
+#     'discrim_error_train': False,
+#     'pool': nn.AvgPool2d,
+#     'activation': nn.LeakyReLU,
+#     'use_wandb': True
+# }
+# args.update(args_dict)
 
 
-x = torch.rand(args.batch_size,
-               args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
+# x = torch.rand(args.batch_size,
+#                args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
-disciminator = Discriminator(args)
-x = disciminator(x)
-print(x.shape)
+# disciminator = Discriminator(args)
+# x = disciminator(x)
+# print(x.shape)
 
 
-y = torch.rand(args.batch_size,
-               args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
-generator = Generator(args)
-y = generator(y)
-print(y.shape)
+# y = torch.rand(args.batch_size,
+#                args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
+# generator = Generator(args)
+# y = generator(y)
+# print(y.shape)
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
