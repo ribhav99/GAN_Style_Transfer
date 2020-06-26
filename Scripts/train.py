@@ -70,7 +70,7 @@ def train(args, device, wandb=None):
                         human_faces).view(-1, batch_size)
                     loss_d_real = loss_function(output_d, labels)
 
-                    labels = torch.zeros(
+                    labels = torch.ones(
                         1, batch_size, device=device) * args.label_smoothing
 
                     output_d = discriminator(
@@ -96,7 +96,7 @@ def train(args, device, wandb=None):
                         human_faces).view(-1, batch_size)  # here
                     loss_d_real = loss_function(output_d, labels)
 
-                    labels = torch.zeros(
+                    labels = torch.ones(
                         1, batch_size, device=device) * args.label_smoothing
 
                     output_d = discriminator(
@@ -113,7 +113,7 @@ def train(args, device, wandb=None):
             optimiser_g.zero_grad()
             optimiser_d.zero_grad()
             # MADE THIS ZEROS JUST FOR SHITS AND GIGGLES
-            labels = torch.zeros(
+            labels = torch.ones(
                 1, batch_size, device=device) * args.label_smoothing
             output = discriminator(fake).view(-1, batch_size)
             loss_g = loss_function(output, labels)
