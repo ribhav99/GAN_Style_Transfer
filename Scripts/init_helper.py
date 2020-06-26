@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 
 class SINNode(nn.Module):
-    def __init__(self):
-        super(SINNode, self).__init__()
+    def __init__(self): super(SINNode, self).__init__()
 
     def forward(self,x):
         return torch.sin(x)
@@ -30,7 +29,8 @@ def downconv_block(input_channel, output_channel, act_fn, pool_type):
     return layer
 
 def upconv_block(input_channel, output_channel, act_fn):
-    layer = [nn.Upsample(scale_factor=2), nn.ConvTranspose2d(input_channel,output_channel,3,padding=1), nn.BatchNorm2d(output_channel), act_fn_module[act_fn]]
+# layer = [nn.Upsample(scale_factor=2), nn.ConvTranspose2d(input_channel,output_channel,3,padding=1), nn.BatchNorm2d(output_channel), act_fn_module[act_fn]]
+    layer = [nn.ConvTranspose2d(input_channel,input_channel,2,stride =2), nn.ConvTranspose2d(input_channel,output_channel,3,padding=1), nn.BatchNorm2d(output_channel), act_fn_module[act_fn]]
     return layer
 
 def init_downconv(channel_list, act_fn, pool_type):
