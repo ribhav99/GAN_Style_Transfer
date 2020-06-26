@@ -17,10 +17,12 @@ class GANDataset(Dataset):
     Cartoon data from: https://google.github.io/cartoonset/
     """
 
-    def __init__(self, human_file_path, cartoon_file_path, human_root_dir, cartoon_root_dir, transform=None):
+    def __init__(self, human_file_path, cartoon_file_path, human_root_dir, cartoon_root_dir, human_mean_path, cartoon_mean_path,transform=None):
         self.human_dir = human_root_dir
         self.cartoon_dir = cartoon_root_dir
         self.transform = transform
+        self.human_mean = np.load(human_mean_path)
+        self.cartoon_mean = np.load(cartoon_mean_path)
         self.human_array = pd.read_csv(human_file_path, sep=" ", header=None)[
             0].values.tolist()
         self.cartoon_array = pd.read_csv(cartoon_file_path, sep=" ", header=None)[
@@ -30,10 +32,11 @@ class GANDataset(Dataset):
     def __len__(self):
         return len(self.human_array)
 
-    def load(self, root_dir, idstr):
+    def load(self, root_dir, idstr, mean):
         img_name = os.path.join(root_dir, idstr)
         image = io.imread(img_name)
         image = img_as_float(image)
+        image = image - mean
         if self.transform:
             image = self.transform(image)
         if len(image.shape) == 3:
@@ -43,8 +46,8 @@ class GANDataset(Dataset):
         return torch.from_numpy(image).float().to(device)
 
     def __getitem__(self, idx):
-        human_face = self.load(self.human_dir, self.human_array[idx])
-        cartoon_face = self.load(self.cartoon_dir, self.cartoon_array[idx])
+        human_face = self.load(self.human_dir, self.human_array[idx], self.human_mean)
+        cartoon_face = self.load(self.cartoon_dir, self.cartoon_array[idx], self.cartoon_mean)
         return human_face, cartoon_face
 
 
@@ -52,6 +55,6 @@ def get_data_loader(args, train=True, transform=None):
     human_txt_path = args.human_train_path if train is True else args.human_test_path
     cartoon_txt_path = args.cartoon_train_path if train is True else args.cartoon_test_path
     data_set = GANDataset(human_txt_path, cartoon_txt_path,
-                          args.human_data_root_path, args.cartoon_data_root_path, transform)
+                          args.human_data_root_path, args.cartoon_data_root_path, args.human_mean_path, args.cartoon_mean_path, transform)
     dataloader = DataLoader(data_set, batch_size=args.batch_size, shuffle=True)
     return dataloader
