@@ -101,6 +101,8 @@ if __name__ == "__main__":
     'save_path' : "/content/GAN_Style_Transfer/Models",
     'image_save_f' : 10, #i.e save an image every 10 epochs
     'discrim_train_f': 2, #every second epoch we train the discriminator
+    'act_fn' : 'relu',
+    'pool_type' : 'max',
     'use_wandb' : False
     }
     args.update(args_dict)
