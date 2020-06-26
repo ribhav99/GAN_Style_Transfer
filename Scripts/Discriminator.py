@@ -1,21 +1,20 @@
 import torch
 import torch.nn as nn
+from init_helper import init_downconv
 
 class Discriminator(nn.Module):
     def __init__(self, args = None):
         super(Discriminator, self).__init__()
-        self.layer1 = nn.Sequential(nn.Conv2d(1, 8, 3, stride=2, padding = 1),nn.BatchNorm2d(8) ,nn.ReLU(), nn.MaxPool2d(2))
-        self.layer2 = nn.Sequential(nn.Conv2d(8, 16, 3, stride=2, padding = 1),nn.BatchNorm2d(16) ,nn.ReLU(), nn.MaxPool2d(2))
-        self.layer3 = nn.Sequential(nn.Conv2d(16, 32, 3, stride=2, padding = 1),nn.BatchNorm2d(32) ,nn.ReLU(), nn.MaxPool2d(2))
-        self.linear1 = nn.Sequential(nn.Linear(128, 100), nn.BatchNorm1d(100), nn.ReLU())
-        self.final = nn.Sequential(nn.Linear(100,1), nn.Sigmoid())
+        channel_list = [1,16,32,64,128]
+        self.conv = init_downconv(channel_list, 'relu' , 'max')
+        self.linear1 = nn.Sequential(nn.Linear(8192, 1000), nn.BatchNorm1d(1000), nn.ReLU())
+        self.final = nn.Sequential(nn.Linear(1000,1), nn.Sigmoid())
 
     def forward(self,x):
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
+        x = self.conv(x)
         batch_size = x.shape[0]
         x = x.view(batch_size, -1)
         x = self.linear1(x)
         x = self.final(x)
         return x
+

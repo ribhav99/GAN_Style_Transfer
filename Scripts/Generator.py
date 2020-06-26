@@ -1,34 +1,20 @@
 import torch
 import torch.nn as nn
-
-
-def init_downconv(input_channel, second_channel, num_layers):
-    layers = []
-    for i in range(3):
-        this_layer = [nn.Conv2d(input_channel, second_channel, 3, padding=1), nn.BatchNorm2d(
-            second_channel), nn.ReLU(), nn.MaxPool2d(2)]
-        layers += this_layer
-        input_channel = second_channel
-        second_channel = second_channel * 2
-    return nn.Sequential(*layers)
-
+from init_helper import ResidualBlock, init_upconv, init_downconv
 
 class Generator(nn.Module):
     def __init__(self, args=None):
         super(Generator, self).__init__()
-        self.downconv = init_downconv(1, 8, 3)
-        self.upconv1 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            32, 16, 3, padding=1), nn.BatchNorm2d(16), nn.ReLU())
-        self.upconv2 = nn.Sequential(nn.Upsample(scale_factor=2), nn.ConvTranspose2d(
-            16, 8, 3, padding=1), nn.BatchNorm2d(8), nn.ReLU())
-        self.upconv3 = nn.Sequential(nn.Upsample(
-            scale_factor=2), nn.ConvTranspose2d(8, 1, 3, padding=1), nn.Tanh())
+        channel_list = [1,16,32,64]
+        act_fn = 'relu' if args is None else args.act_fn
+        pool_type = 'max' if args is None else args.pool_type
+        self.downconv = init_downconv(channel_list, act_fn, pool_type)
+        self.resblock = ResidualBlock(64)
+        self.upconv = init_upconv(channel_list, act_fn, last_layer_act = 'tanh')
 
     def forward(self, x):
         x = self.downconv(x)
-        x = self.upconv1(x)
-        x = self.upconv2(x)
-        x = self.upconv3(x)
+        x = self.resblock(x)
+        x = self.upconv(x)
         return x
-
 
