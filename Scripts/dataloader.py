@@ -32,15 +32,12 @@ class GANDataset(Dataset):
 
     def load(self, root_dir, idstr):
         img_name = os.path.join(root_dir, idstr)
-        image = io.imread(img_name)
-        # image = img_as_float(image)
+        image = io.imread(img_name).astype("float32")
         if self.transform:
             image = self.transform(image)
-        if len(image.shape) == 3:
-            image = np.moveaxis(image, -1, 0)
-        elif len(image.shape) == 2:
-            image = np.expand_dims(image, axis=0)
-        return torch.from_numpy(image).float().to(device)
+        image = (image / 127.5) - 1  # normalise the images between -1 and 1
+        image = np.moveaxis(image, -1, 0)
+        return torch.from_numpy(image).float()
 
     def __getitem__(self, idx):
         human_face = self.load(self.human_dir, self.human_array[idx])
