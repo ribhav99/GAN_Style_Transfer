@@ -113,7 +113,6 @@ class Discriminator(nn.Module):
             2, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
         self._linear_dim = np.prod(self.conv(fake_data)[0].shape)
-        print(self._linear_dim)
         self.linear = nn.Sequential(
             nn.Linear(self._linear_dim, 1), nn.Sigmoid())
 
