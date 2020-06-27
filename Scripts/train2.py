@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from GeneratorAndDiscriminator import Generator, Discriminator
+from GeneratorAndDiscriminator2 import Generator, Discriminator
 from dataloader import get_data_loader
 from tqdm import tqdm, trange
 from datetime import datetime
@@ -12,7 +12,7 @@ from train_test_split import split_human_data, split_cartoon_data
 def train(args, device, wandb=None):
     #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # Preproess data
+    # PREPROCESS DATA
     # make_human_text_file(args)
     # make_cartoon_text_file(args)
     # split_human_data(args)
