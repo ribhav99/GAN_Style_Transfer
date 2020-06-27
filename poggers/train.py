@@ -30,7 +30,7 @@ def train(args, wandb = None):
         total_discrim_trained = 0
         total_gen_trained = 0
         for batch_num, data in enumerate(full_data):
-            human_faces, cartoon_faces = data
+            human_faces, cartoon_faces = data[0].to(device), data[1].to(device)
             batch_size = human_faces.shape[0]
             fake_images = generator(cartoon_faces)
             optimiser_d.zero_grad()
