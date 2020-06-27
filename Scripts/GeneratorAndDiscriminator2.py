@@ -154,9 +154,9 @@ if __name__ == '__main__':
         'kernel_size': 4,
         'padding': 1,  # (kernel_size - 1) //2
         # first entry must match last entry of cartoon dim
-        'gen_channels': [1, 32, 64, 128, 256],
-        'dis_channels': [1, 32, 64, 128, 256],
-        'num_residual_layers': 3,
+        'gen_channels': [1, 32, 64, 128, 256, 512],
+        'dis_channels': [1, 32, 64, 128, 256, 512],
+        'num_residual_layers': 6,
         'image_save_f': 1,
         'discrim_train_f': 3,
         'discrim_error_train': False,

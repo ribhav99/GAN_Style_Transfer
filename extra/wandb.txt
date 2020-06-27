@@ -155,3 +155,38 @@ feasible-bird-45 --^^ --dis_learning_rate 0.002 --gen_learning_rate 0.002
 mild_snowball_46 --^ --dis_learning_rate 0.01 --gen_learning_rate 0.01 --featured_d=g=128
 glorius-surf-47 --^^^^ --gen and dis learn 0.003 --label_smoothing 0.1
 robust-gorge-49--^ --2 more conv and 2 more upconv layers
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NEW ARCHITECTURE
+
+args_dict = {
+        'dis_learning_rate': 0.0002,
+        'gen_learning_rate': 0.0002,
+        'image_dimensions': (128, 128, 1),
+        'cartoon_dimensions': (128, 128, 1),
+        'batch_size': 100,
+        'max_pool': (2, 2),
+        'num_epochs': 30,
+        'kernel_size': 4,
+        'padding': 1,  # (kernel_size - 1) //2
+        # first entry must match last entry of cartoon dim
+        'gen_channels': [1, 32, 64, 128, 256],
+        'dis_channels': [1, 32, 64, 128, 256],
+        'num_residual_layers': 3,
+        'image_save_f': 1,
+        'discrim_train_f': 3,
+        'lambda_cycle': 10,
+        'discrim_error_train': False,
+        'pool': nn.AvgPool2d,
+        'activation': nn.LeakyReLU,
+        'norm': nn.InstanceNorm2d,
+        'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
+        'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
+        'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
+        'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
+        'human_data_root_path': "/content/humangray128/",
+        'cartoon_data_root_path': "/content/cartoonfacesgray/",
+        'save_path': "/content/GAN_Style_Transfer/Models",
+        'use_wandb': True
+    }
+brisk-wind-54
+--dis and gen channels added 256 --num_residual_layers 6
