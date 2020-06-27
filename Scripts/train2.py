@@ -82,11 +82,12 @@ def train(args, device, wandb=None):
         avg_g_x_y_loss = total_g_x_y_loss / total_data
         avg_g_y_x_loss = total_g_y_x_loss / total_data
         if args.use_wandb:
-            matrix_of_img = fake_y.detach()[:10, ...]
-            name = "examples " + "epoch " + str(epoch + 1)
-            wandb.log({name: [wandb.Image(matrix_of_img[i])
-                              for i in range(10)]})
-            del matrix_of_img
+            if (epoch + 1) % args.image_save_f == 0:
+                matrix_of_img = fake_y.detach()[:10, ...]
+                name = "examples " + "epoch " + str(epoch + 1)
+                wandb.log({name: [wandb.Image(matrix_of_img[i])
+                                  for i in range(10)]})
+                del matrix_of_img
             wandb.log({"Avg Discriminator loss": avg_d_loss, 'epoch': epoch + 1})
             wandb.log(
                 {"Avg Cartoon to Human loss": avg_g_x_y_loss, 'epoch': epoch + 1})
