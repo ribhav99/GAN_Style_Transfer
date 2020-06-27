@@ -119,46 +119,50 @@ class Generator(nn.Module):
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 # THESE VALUES FOR TESTING. REMOVE THEM
 
-# args = AttrDict()
-# args_dict = {
-#     'dis_learning_rate': 0.001,
-#     'gen_learning_rate': 0.002,
-#     'image_dimensions': (128, 128, 1),
-#     'cartoon_dimensions': (128, 128, 1),
-#     'batch_size': 2,
-#     'max_pool': (2, 2),
-#     'features_d': 64,
-#     'features_g': 64,
-#     'num_epochs': 85,
-#     'kernel_size': 3,
-#     'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
-#     'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
-#     'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
-#     'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
-#     'human_data_root_path': "/content/humangray128/",
-#     'cartoon_data_root_path': "/content/cartoonfacesgray/",
-#     'save_path': "/content/GAN_Style_Transfer/Models",
-#     'image_save_f': 1,
-#     'discrim_train_f': 3,
-#     'discrim_error_train': False,
-#     'pool': nn.AvgPool2d,
-#     'activation': nn.LeakyReLU,
-#     'use_wandb': True
-# }
-# args.update(args_dict)
+args = AttrDict()
+args_dict = {
+    'dis_learning_rate': 0.001,
+    'gen_learning_rate': 0.002,
+    'image_dimensions': (128, 128, 1),
+    'cartoon_dimensions': (128, 128, 1),
+    'batch_size': 2,
+    'max_pool': (2, 2),
+    'features_d': 64,
+    'features_g': 64,
+    'num_epochs': 85,
+    'kernel_size': 4,
+    'padding': 1,  # (kernel_size - 1) //2
+    'gen_channels': [1, 32, 64, 128, 256],
+    'num_residual_layers': 3,
+    'image_save_f': 1,
+    'discrim_train_f': 3,
+    'discrim_error_train': False,
+    'pool': nn.AvgPool2d,
+    'activation': nn.LeakyReLU,
+    'norm': nn.InstanceNorm2d,
+    'human_train_path': "/content/GAN_Style_Transfer/data/human_train.txt",
+    'human_test_path': "/content/GAN_Style_Transfer/data/human_test.txt",
+    'cartoon_train_path': "/content/GAN_Style_Transfer/data/cartoon_train.txt",
+    'cartoon_test_path': "/content/GAN_Style_Transfer/data/cartoon_test.txt",
+    'human_data_root_path': "/content/humangray128/",
+    'cartoon_data_root_path': "/content/cartoonfacesgray/",
+    'save_path': "/content/GAN_Style_Transfer/Models",
+    'use_wandb': True
+}
+args.update(args_dict)
 
 
-# x = torch.rand(args.batch_size,
-#                args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
+x = torch.rand(args.batch_size,
+               args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
-# disciminator = Discriminator(args)
-# x = disciminator(x)
-# print(x.shape)
+disciminator = Discriminator(args)
+x = disciminator(x)
+print(x.shape)
 
 
-# y = torch.rand(args.batch_size,
-#                args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
-# generator = Generator(args)
-# y = generator(y)
-# print(y.shape)
+y = torch.rand(args.batch_size,
+               args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
+generator = Generator(args)
+y = generator(y)
+print(y.shape)
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
