@@ -62,7 +62,7 @@ def train(args, wandb = None):
             optimiser_g_y_x.step()
             total_d_loss += (total_d.item() * 2)
             total_g_x_y_loss += loss_g_x_y.item()
-            total_g_y_x_loss += loss.g_y_x.item()
+            total_g_y_x_loss += loss_g_y_x.item()
         avg_d_loss = total_d_loss / total_data
         avg_g_x_y_loss = total_g_x_y_loss / total_data
         avg_g_y_x_loss = total_g_y_x_loss / total_data
