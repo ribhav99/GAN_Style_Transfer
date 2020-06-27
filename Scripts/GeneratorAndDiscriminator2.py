@@ -105,7 +105,7 @@ class Discriminator(nn.Module):
         super().__init__()
         conv_layers = self.dis_downconv(args)
         conv_layers.append(nn.Conv2d(args.dis_channels[-1], 1,
-                                     kernel_size=1, stride=2, padding=0))
+                                     kernel_size=1, stride=1, padding=0))
         conv_layers.append(args.activation())
         self.conv = nn.Sequential(*conv_layers)
 
