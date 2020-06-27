@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from Generator import Generator
 from Discriminator import Discriminator
-from dataloaderv2 import get_data_loader
+from dataloader import get_data_loader
 from tqdm import tqdm, trange
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -23,7 +23,6 @@ def train(args, wandb = None):
 
     discriminator.train()
     generator.train()
-    loss_gen_f = nn.BCELoss()
     print("Start Training....")
     for epoch in trange(args.num_epochs):
         loss_gen = 0.0
