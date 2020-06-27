@@ -31,7 +31,7 @@ class GANDataset(Dataset):
         image = io.imread(img_name).astype("float32")
         if self.transform:
             image = self.transform(image)
-        image = (image - 127.5) - 1
+        image = (image / 127.5) - 1
         image = np.moveaxis(image, -1, 0)
         return torch.from_numpy(image).float()
 
