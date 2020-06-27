@@ -6,7 +6,7 @@ class Discriminator(nn.Module):
     def __init__(self, args = None):
         super(Discriminator, self).__init__()
         channel_list = [3,16,32,64,128,256]
-        act_fn = 'relu' if args is None else args.act_fn
+        act_fn = 'relu' if args is None else args.act_fn_dis
         norm_type = 'batch' if args is None else args.norm_type
         conv_layers = gen_downconv(channel_list,act_fn,norm_type)
         conv_layers += get_down_conv_block(256,1,1,act_fn,norm_type,False,1)

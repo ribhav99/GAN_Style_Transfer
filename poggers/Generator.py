@@ -6,7 +6,7 @@ from init_helper import ResidualBlock, gen_upconv, gen_downconv
 class Generator(nn.Module):
     def __init__(self, args=None):
         super(Generator, self).__init__()
-        act_fn = 'relu' if args is None else args.act_fn
+        act_fn = 'relu' if args is None else args.act_fn_gen
         norm_type = 'batch' if args is None else args.norm_type
         num_res = 3 if args is None else args.num_res
         channel_list = [3,32,64,128, 256]
