@@ -5,24 +5,24 @@ import torch.nn.functional as F
 import numpy as np
 
 
-def get_res_block(args, dropout):
+def get_res_block(args):
     in_channel = args.gen_channels[-1]
     layer = []
     layer.append(args.norm(in_channel))
     layer.append(args.activation())
     layer.append(nn.Conv2d(in_channel, in_channel, 3, padding=1))
-    if dropout:
+    if args.dropout:
         layer.append(nn.Dropout(0.5))
     return layer
 
 
 class ResidualBlock(nn.Module):
-    def __init__(self, args, dropout=False):
+    def __init__(self, args):
         super(ResidualBlock, self).__init__()
         self.block1 = nn.Sequential(
-            *get_res_block(args, dropout))
+            *get_res_block(args))
         self.block2 = nn.Sequential(
-            *get_res_block(args, dropout))
+            *get_res_block(args))
 
     def forward(self, x):
         residual = x
@@ -144,13 +144,13 @@ if __name__ == '__main__':
 
     args = AttrDict()
     args_dict = {
-        'dis_learning_rate': 0.001,
-        'gen_learning_rate': 0.002,
+        'dis_learning_rate': 0.0002,
+        'gen_learning_rate': 0.0002,
         'image_dimensions': (128, 128, 1),
         'cartoon_dimensions': (128, 128, 1),
         'batch_size': 2,
         'max_pool': (2, 2),
-        'num_epochs': 85,
+        'num_epochs': 30,
         'kernel_size': 4,
         'padding': 1,  # (kernel_size - 1) //2
         # first entry must match last entry of cartoon dim
@@ -159,6 +159,8 @@ if __name__ == '__main__':
         'num_residual_layers': 6,
         'image_save_f': 1,
         'discrim_train_f': 3,
+        'lambda_cycle': 10,
+        'dropout': True,
         'discrim_error_train': False,
         'pool': nn.AvgPool2d,
         'activation': nn.LeakyReLU,

@@ -21,8 +21,8 @@ def train(args, device, wandb=None):
     # LOAD DATA .......
     full_data = get_data_loader(args, train=True)
 
-    d_x = Discriminator(args).to(device)  # x is cartoon, y is human faces
-    d_y = Discriminator(args).to(device)
+    d_x = Discriminator(args).to(device)  # x is cartoon
+    d_y = Discriminator(args).to(device)  # y is human faces
     g_x_y = Generator(args).to(device)  # cartoon -> human faces
     g_y_x = Generator(args).to(device)  # human faces -> cartoon
     optimiser_d_x = optim.Adam(d_x.parameters(), lr=args.dis_learning_rate)
@@ -38,10 +38,12 @@ def train(args, device, wandb=None):
     def cycle_loss(real, reconstructed):
         loss = (torch.abs(real - reconstructed)).mean()
         return args.lambda_cycle * loss
+
     d_x.train()
     d_y.train()
     g_x_y.train()
     g_y_x.train()
+
     print("Start Training....")
     for epoch in trange(args.num_epochs):
         total_d_loss = 0.0

@@ -189,4 +189,4 @@ args_dict = {
         'use_wandb': True
     }
 brisk-wind-54
---dis and gen channels added 256 --num_residual_layers 6
+classic-elevator-55 --dis and gen channels added 256 --num_residual_layers 6
