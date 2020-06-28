@@ -77,6 +77,10 @@ def train(args, wandb = None):
             name = "examples " + "epoch " + str(epoch + 1)
             wandb.log({name : [wandb.Image(matrix_of_img[i]) for i in range(10)]})
             del matrix_of_img
+            matrix_of_img = fake_x.detach()[:10,...]
+            name = "examples cartoon" + "epoch " + str(epoch + 1)
+            wandb.log({name : [wandb.Image(matrix_of_img[i]) for i in range(10)]})
+            del matrix_of_img
             wandb.log({"Avg Discriminator for Cartoon loss": avg_d_x_loss, 'epoch': epoch + 1})
             wandb.log({"Avg Discriminator for Human Faces loss": avg_d_y_loss, 'epoch': epoch + 1})
             wandb.log({"Avg Cartoon to Human loss": avg_g_x_y_loss, 'epoch': epoch + 1})
