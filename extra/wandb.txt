@@ -190,3 +190,4 @@ args_dict = {
     }
 brisk-wind-54
 classic-elevator-55 --dis and gen channels added 256 --num_residual_layers 6
+--^ --epochs 100 --dropout True
