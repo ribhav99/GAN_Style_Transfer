@@ -13,7 +13,8 @@ act_fn_module = nn.ModuleDict([
                 ['prelu', nn.PReLU()],
                 ['relu', nn.ReLU()],
                 ['tanh', nn.Tanh()],
-                ['sin', SINNode()]
+                ['sin', SINNode()],
+                ['sigmoid', nn.Sigmoid()]
         ])
 
 pool_module = nn.ModuleDict([
@@ -26,6 +27,8 @@ def get_norm(channel,norm_type):
         f = nn.InstanceNorm2d(channel)    
     elif norm_type == 'batch':
         f = nn.BatchNorm2d(channel) 
+    else:
+        f = nn.Identity()
     return f
 
 def get_down_conv_block(input_channel, output_channel, kersize ,act_fn, norm_type, tonorm = True, stride = 2):
