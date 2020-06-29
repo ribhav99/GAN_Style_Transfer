@@ -54,7 +54,7 @@ def train(args, wandb = None):
                 matrix_of_img = VAE_human.decode(VAE_cartoon.reparameterize(sample_mu,sample_logsig))
                 name = "examples " + "epoch " + str(epoch + 1)
                 wandb.log({name : [wandb.Image(matrix_of_img[i]) for i in range(10)]})
-                wandb.log({name : [wandb.Image(cartoon[:10][i]) for i in range(10)]})
+                wandb.log({name + "input": [wandb.Image(cartoon[:10][j]) for j in range(10)]})
                 del matrix_of_img
             wandb.log({"Avg VAE Human loss": avg_VAE_human_loss, 'epoch': epoch + 1})
             wandb.log({"Avg VAE Cartoon loss": avg_VAE_cartoon_loss, 'epoch': epoch + 1})
