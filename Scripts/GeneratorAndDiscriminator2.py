@@ -161,7 +161,6 @@ if __name__ == '__main__':
         'discrim_train_f': 1,
         'lambda_cycle': 10,
         'dropout': True,
-        'discrim_error_train': False,
         'decay': False,
         'load_models': False,
         'model_path': "/content/GAN_Style_Transfer/models/FILENAME",
