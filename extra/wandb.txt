@@ -189,5 +189,8 @@ args_dict = {
         'use_wandb': True
     }
 brisk-wind-54
-classic-elevator-55 --dis and gen channels added 256 --num_residual_layers 6
---^ --epochs 100 --dropout True
+classic-elevator-55 --dis and gen channels added 512 --num_residual_layers 6
+splendid-river-56 --^ --epochs 100 --dropout True
+peach-monkey-60 --^ --activation torch.sin --removed 512 from channels
+daily-pond-61 --^ --activation LeakyReLU
+--^ --epochs 50

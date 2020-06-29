@@ -10,7 +10,6 @@ from train_test_split import split_human_data, split_cartoon_data
 
 
 def train(args, device, wandb=None):
-    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # PREPROCESS DATA
     # make_human_text_file(args)
