@@ -43,7 +43,8 @@ def get_down_conv_block(input_channel, output_channel, kersize ,act_fn, norm_typ
 def get_up_conv_block(input_channel, output_channel, kersize ,act_fn, norm_type, tonorm = True, dropout = False):
     layer = []
     to_pad = (kersize - 1)//2
-    layer.append(nn.ConvTranspose2d(input_channel, output_channel,kernel_size =kersize, stride = 2, padding = to_pad))
+    layer += [nn.Upsample(scale_factor=2,mode='bilinear', align_corners = False), nn.ReflectionPad2d(1), nn.Conv2d(input_channel,output_channel,kernel_size=3,stride=1,padding=0)]
+# layer.append(nn.ConvTranspose2d(input_channel, output_channel,kernel_size =kersize, stride = 2, padding = to_pad))
     if tonorm:
         layer.append(get_norm(output_channel, norm_type))
     if dropout:
