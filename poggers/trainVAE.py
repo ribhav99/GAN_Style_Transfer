@@ -50,7 +50,8 @@ def train(args, wandb = None):
         avg_VAE_cartoon_loss = total_VAE_cartoon_loss / total_data
         if args.use_wandb:
             with torch.no_grad():
-                matrix_of_img = VAE_human.decode(VAE_cartoon.reparameterize(VAE_cartoon.encode(cartoon[:10])))
+                sample_mu , sample_logsig = VAE_cartoon.encode(cartoon[:10])
+                matrix_of_img = VAE_human.decode(VAE_cartoon.reparameterize(sample_mu,sample_logsig)))
                 name = "examples " + "epoch " + str(epoch + 1)
                 wandb.log({name : [wandb.Image(matrix_of_img[i]) for i in range(10)]})
                 wandb.log({name : [wandb.Image(cartoon[:10][i]) for i in range(10)]})
