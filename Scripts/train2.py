@@ -131,8 +131,8 @@ def train(args, device, wandb=None):
     if args.use_wandb:
         time = datetime.datetime.now()
         torch.save({"d_x": d_x.state_dict(), "d_y": d_y.state_dict(), "g_x_y": g_x_y.state_dict(), "g_y_x": g_y_x.state_dict(), "optimiser_d_x": optimiser_d_x.state_dict(), "optimiser_d_y": optimiser_d_y.state_dict(), "optimiser_g_x_y": optimiser_g_x_y.state_dict(), "optimiser_g_y_x": optimiser_g_y_x.state_dict()},
-                   'model{}.tar'.format(time))
-        wandb.save('model{}.tar'.format(time))
+                   'model{}.pt'.format(time))
+        wandb.save('model{}.pt'.format(time))
         # torch.save(d_x.state_dict(), "d_x.pt")
         # torch.save(d_y.state_dict(), "d_y.pt")
         # torch.save(g_x_y.state_dict(), "g_x_y.pt")
