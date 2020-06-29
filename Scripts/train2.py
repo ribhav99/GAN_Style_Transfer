@@ -28,6 +28,18 @@ def train(args, device, wandb=None):
     optimiser_d_y = optim.Adam(d_y.parameters(), lr=args.dis_learning_rate)
     optimiser_g_x_y = optim.Adam(g_x_y.parameters(), lr=args.gen_learning_rate)
     optimiser_g_y_x = optim.Adam(g_y_x.parameters(), lr=args.gen_learning_rate)
+
+    if args.load_models:
+        models = torch.load(args.model_path)
+        d_x.load_state_dict(models['d_x'])
+        d_y.load_state_dict(models['d_y'])
+        g_x_y.load_state_dict(models['g_x_y'])
+        g_y_x.load_state_dict(models['g_y_x'])
+        optimiser_d_x.load_state_dict(models['optimiser_d_x'])
+        optimiser_d_y.load_state_dict(models['optimiser_d_y'])
+        optimiser_g_x_y.load_state_dict(models['optimiser_g_x_y'])
+        optimiser_g_y_x.load_state_dict(models['optimiser_g_y_x'])
+
     if args.use_wandb:
         wandb.watch(d_x, log='all')
         wandb.watch(d_y, log='all')
@@ -49,6 +61,25 @@ def train(args, device, wandb=None):
         total_g_x_y_loss = 0.0
         total_g_y_x_loss = 0.0
         total_data = 0
+
+        if args.decay:
+            dis_lr = args.dis_learning_rate - \
+                ((args.dis_learning_rate / 100) * epoch)
+            gen_lr = args.gen_learning_rate - \
+                ((args.gen_learning_rate / 100) * epoch)
+
+            for l in len(d_x.param_groups):
+                d_x.param_groups[l]['lr'] = dis_lr
+
+            for l in len(d_y.param_groups):
+                d_y.param_groups[l]['lr'] = dis_lr
+
+            for l in len(g_x_y.param_groups):
+                g_x_y.param_groups[l]['lr'] = gen_lr
+
+            for l in len(g_y_x.param_groups):
+                g_y_x.param_groups[l]['lr'] = gen_lr
+
         for batch_num, data in enumerate(full_data):
             y, x = data[0].to(device), data[1].to(
                 device)  # x is cartoon, y is human
@@ -98,11 +129,15 @@ def train(args, device, wandb=None):
         print("Avg Cartoon to Human Loss: {}".format(avg_g_x_y_loss))
         print("Avg Human to Cartoon Loss: {}".format(avg_g_y_x_loss))
     if args.use_wandb:
-        torch.save(d_x.state_dict(), "d_x.pt")
-        torch.save(d_y.state_dict(), "d_y.pt")
-        torch.save(g_x_y.state_dict(), "g_x_y.pt")
-        torch.save(g_y_x.state_dict(), "g_y_x.pt")
-        wandb.save("d_x.pt")
-        wandb.save("d_y.pt")
-        wandb.save("g_x_y.pt")
-        wandb.save("g_y_x.pt")
+        time = datetime.datetime.now()
+        torch.save({"d_x": d_x.state_dict(), "d_y": d_y.state_dict(), "g_x_y": g_x_y.state_dict(), "g_y_x": g_y_x.state_dict(), "optimiser_d_x": optimiser_d_x.state_dict(), "optimiser_d_y": optimiser_d_y.state_dict(), "optimiser_g_x_y": optimiser_g_x_y.state_dict(), "optimiser_g_y_x": optimiser_g_y_x.state_dict()},
+                   'model{}.tar'.format(time))
+        wandb.save('model{}.tar'.format(time))
+        # torch.save(d_x.state_dict(), "d_x.pt")
+        # torch.save(d_y.state_dict(), "d_y.pt")
+        # torch.save(g_x_y.state_dict(), "g_x_y.pt")
+        # torch.save(g_y_x.state_dict(), "g_y_x.pt")
+        # wandb.save("d_x.pt")
+        # wandb.save("d_y.pt")
+        # wandb.save("g_x_y.pt")
+        # wandb.save("g_y_x.pt")
