@@ -35,7 +35,7 @@ def train(args, wandb = None):
     def set_grad(nets, req_grad):
         for net in nets:
             for param in net.parameters():
-                param.requires_grad = requires_grad
+                param.requires_grad = req_grad
     d_x.train()
     d_y.train()
     g_x_y.train()
