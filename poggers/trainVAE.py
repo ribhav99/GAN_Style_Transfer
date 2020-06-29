@@ -9,7 +9,6 @@ from tqdm import tqdm, trange
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def loss_function(recon_x, x, mu, logsigma):
-""" VAE loss function """
     BCE = ((recon_x -  x)**2).sum()
     KLD = -0.5 * torch.sum(1 + 2 * logsigma - mu.pow(2) - (2 * logsigma).exp())
     return BCE + KLD
@@ -44,7 +43,7 @@ def train(args, wandb = None):
         total_data = 0
         for batch_num, data in enumerate(full_data):
             human, cartoon = data[0].to(device), data[1].to(device) # x is cartoon, y is human
-            total_data += x.shape[0]
+            total_data += human.shape[0]
             total_VAE_human_loss += train_VAE_1_step(VAE_human, optimiser_human,human)
             total_VAE_cartoon_loss += train_VAE_1_step(VAE_cartoon,optimiser_cartoon,cartoon)
         avg_VAE_human_loss = total_VAE_human_loss / total_data
