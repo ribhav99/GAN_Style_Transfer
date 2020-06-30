@@ -69,18 +69,16 @@ def train(args, device, wandb=None):
             gen_lr = args.gen_learning_rate - \
                 ((args.gen_learning_rate / 100) * epoch)
 
-            for l in len(optimiser_d_x.param_groups):
-                print(optimiser_d_x.param_groups[l])
-                print(type(optimiser_d_x.param_groups[l]))
+            for l in range(len(optimiser_d_x.param_groups)):
                 optimiser_d_x.param_groups[l]['lr'] = dis_lr
 
-            for l in len(optimiser_d_y.param_groups):
+            for l in range(len(optimiser_d_y.param_groups)):
                 optimiser_d_y.param_groups[l]['lr'] = dis_lr
 
-            for l in len(optimiser_g_x_y.param_groups):
+            for l in range(len(optimiser_g_x_y.param_groups)):
                 optimiser_g_x_y.param_groups[l]['lr'] = gen_lr
 
-            for l in len(optimiser_g_y_x.param_groups):
+            for l in range(len(optimiser_g_y_x.param_groups)):
                 optimiser_g_y_x.param_groups[l]['lr'] = gen_lr
 
         for batch_num, data in enumerate(full_data):
