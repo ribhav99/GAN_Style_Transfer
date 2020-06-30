@@ -194,4 +194,5 @@ splendid-river-56 --^ --epochs 100 --dropout True
 peach-monkey-60 --^ --activation torch.sin --removed 512 from channels
 daily-pond-61 --^ --activation LeakyReLU
 ethereal-voice-62 --^ --epochs 50
---^ --saved the model
+floral_monkey-65 --^ --saved the model 50  epochs
+solar-gorge-67 --^ --saved the model 100 epochs (50 more)
