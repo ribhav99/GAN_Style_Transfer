@@ -30,6 +30,7 @@ def train(args, device, wandb=None):
     optimiser_g_y_x = optim.Adam(g_y_x.parameters(), lr=args.gen_learning_rate)
 
     if args.load_models:
+        print("Loading Models...")
         models = torch.load(args.model_path)
         d_x.load_state_dict(models['d_x'])
         d_y.load_state_dict(models['d_y'])
@@ -39,7 +40,7 @@ def train(args, device, wandb=None):
         optimiser_d_y.load_state_dict(models['optimiser_d_y'])
         optimiser_g_x_y.load_state_dict(models['optimiser_g_x_y'])
         optimiser_g_y_x.load_state_dict(models['optimiser_g_y_x'])
-
+        print("Successfully Loaded Models...")
     if args.use_wandb:
         wandb.watch(d_x, log='all')
         wandb.watch(d_y, log='all')
