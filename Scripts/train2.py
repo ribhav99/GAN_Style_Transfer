@@ -70,7 +70,7 @@ def train(args, device, wandb=None):
                 ((args.gen_learning_rate / 100) * epoch)
 
             for l in len(optimiser_d_x.param_groups):
-                d_x.param_groups[l]['lr'] = dis_lr
+                optimiser_d_x.param_groups[l]['lr'] = dis_lr
 
             for l in len(optimiser_d_y.param_groups):
                 optimiser_d_y.param_groups[l]['lr'] = dis_lr
