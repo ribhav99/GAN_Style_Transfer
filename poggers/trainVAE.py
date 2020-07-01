@@ -13,10 +13,12 @@ def loss_function(recon_x, x, mu, logsigma):
     KLD = -0.5 * torch.sum(1 + 2 * logsigma - mu.pow(2) - (2 * logsigma).exp())
     return BCE + KLD
 
-def train_VAE_1_step(model, optim, data):
+def train_VAE_1_step(model,other_VAE,optim, data):
     optim.zero_grad()
     recon_batch, mu, logsig = model(data)
-    loss = loss_function(recon_batch, data, mu, logsig)
+    fake = other_VAE.decode(model.reparameterize(mu,logsig))
+    fake_batch, fake_mu, fake_logsig = other_VAE(fake)
+    loss = loss_function(recon_batch, data, mu, logsig) + loss_function(fake_batch, fake, fake_mu,fake_logsig)
     loss.backward()
     optim.step()
     return loss.item()
@@ -44,8 +46,8 @@ def train(args, wandb = None):
         for batch_num, data in enumerate(full_data):
             human, cartoon = data[0].to(device), data[1].to(device) # x is cartoon, y is human
             total_data += human.shape[0]
-            total_VAE_human_loss += train_VAE_1_step(VAE_human, optimiser_human,human)
-            total_VAE_cartoon_loss += train_VAE_1_step(VAE_cartoon,optimiser_cartoon,cartoon)
+            total_VAE_human_loss += train_VAE_1_step(VAE_human, VAE_cartoon,optimiser_human,human)
+            total_VAE_cartoon_loss += train_VAE_1_step(VAE_cartoon, VAE_human,optimiser_cartoon,cartoon)
         avg_VAE_human_loss = total_VAE_human_loss / total_data
         avg_VAE_cartoon_loss = total_VAE_cartoon_loss / total_data
         if args.use_wandb:
