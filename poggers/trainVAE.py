@@ -18,7 +18,7 @@ def train_VAE_1_step(model,other_VAE,optim, data):
     recon_batch, mu, logsig = model(data)
     fake = other_VAE.decode(model.reparameterize(mu,logsig))
     fake_batch, fake_mu, fake_logsig = other_VAE(fake)
-    loss = loss_function(recon_batch, data, mu, logsig) + loss_function(fake_batch, fake, fake_mu,fake_logsig)
+    loss = loss_function(recon_batch, data, mu, logsig) + 0.5 * loss_function(fake_batch, fake, fake_mu,fake_logsig)
     loss.backward()
     optim.step()
     return loss.item()
