@@ -98,10 +98,12 @@ def train(args, device, wandb=None):
             optimiser_d_y.step()
             optimiser_g_x_y.zero_grad()
             optimiser_g_y_x.zero_grad()
-            loss_g_y_x = ((d_x(fake_x) - 1)**2).mean() + \
-                cycle_loss(y, g_x_y(fake_x))
-            loss_g_x_y = ((d_y(fake_y) - 1)**2).mean() + \
-                cycle_loss(x, g_y_x(fake_y))
+
+            loss_g_y_x = ((d_x(fake_x) - 1)**2).mean() #+ \
+                #cycle_loss(y, g_x_y(fake_x))
+            loss_g_x_y = ((d_y(fake_y) - 1)**2).mean() #+ \
+                #cycle_loss(x, g_y_x(fake_y))
+
             loss_g_y_x.backward()
             loss_g_x_y.backward()
             optimiser_g_x_y.step()

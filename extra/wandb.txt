@@ -196,4 +196,5 @@ daily-pond-61 --^ --activation LeakyReLU
 ethereal-voice-62 --^ --epochs 50
 floral_monkey-65 --^ --saved the model 50  epochs
 solar-gorge-67 --^ --saved the model 100 epochs (50 more)
-splendid-lion-71 --^ --savd model 150 epochs (50 more) with decay
+splendid-lion-71 --^ --saved model 150 epochs (50 more) with decay
+smart-field-72 --^ --saved model 200 epochs (50 more) with decay
