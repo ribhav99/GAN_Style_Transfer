@@ -85,10 +85,14 @@ def train(args, device, wandb=None):
             y, x = data[0].to(device), data[1].to(
                 device)  # x is cartoon, y is human
             total_data += x.shape[0]
-            fake_x = g_y_x(y)
-            fake_y = g_x_y(x)
+
+            optimiser_g_x_y.zero_grad()
+            optimiser_g_y_x.zero_grad()
             optimiser_d_x.zero_grad()
             optimiser_d_y.zero_grad()
+    
+            fake_x = g_y_x(y)
+            fake_y = g_x_y(x)
             d_loss_real = ((d_x(x) - 1) ** 2).mean() + ((d_y(y) - 1)**2).mean()
             d_loss_fake = (d_y(fake_y.detach())**2).mean() + \
                 (d_x(fake_x.detach())**2).mean()
@@ -96,8 +100,6 @@ def train(args, device, wandb=None):
             total_d.backward()
             optimiser_d_x.step()
             optimiser_d_y.step()
-            optimiser_g_x_y.zero_grad()
-            optimiser_g_y_x.zero_grad()
 
             loss_g_y_x = ((d_x(fake_x) - 1)**2).mean() + \
                 cycle_loss(y, g_x_y(fake_x))
