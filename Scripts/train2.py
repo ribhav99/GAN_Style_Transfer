@@ -93,11 +93,16 @@ def train(args, device, wandb=None):
     
             fake_x = g_y_x(y)
             fake_y = g_x_y(x)
-            d_loss_real = ((d_x(x) - 1) ** 2).mean() + ((d_y(y) - 1)**2).mean()
-            d_loss_fake = (d_y(fake_y.detach())**2).mean() + \
-                (d_x(fake_x.detach())**2).mean()
-            total_d = (d_loss_real + d_loss_fake) * 0.5
-            total_d.backward()
+            d_x_loss = ((d_x(x) - 1) ** 2).mean() + (d_x(fake_x.detach())**2).mean()
+            d_y_loss = ((d_y(y) - 1) ** 2).mean() + (d_y(fake_y.detach())**2).mean()
+            d_x_loss.backward()
+            d_y_loss.backward()
+
+            # d_loss_real = ((d_x(x) - 1) ** 2).mean() + ((d_y(y) - 1)**2).mean()
+            # d_loss_fake = (d_y(fake_y.detach())**2).mean() + \
+            #     (d_x(fake_x.detach())**2).mean()
+            #total_d = d_loss_real + d_loss_fake # sum was divided by 2
+            #total_d.backward()
             optimiser_d_x.step()
             optimiser_d_y.step()
 
