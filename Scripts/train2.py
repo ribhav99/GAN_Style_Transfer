@@ -115,12 +115,12 @@ def train(args, device, wandb=None):
             loss_g_x_y.backward()
             optimiser_g_x_y.step()
             optimiser_g_y_x.step()
-            total_d_loss += (total_d.item() * 2)
-            total_g_x_y_loss += loss_g_x_y.item()
-            total_g_y_x_loss += loss_g_y_x.item()
-        avg_d_loss = total_d_loss / total_data
-        avg_g_x_y_loss = total_g_x_y_loss / total_data
-        avg_g_y_x_loss = total_g_y_x_loss / total_data
+            #total_d_loss += (total_d.item() * 2)
+            #total_g_x_y_loss += loss_g_x_y.item()
+            #total_g_y_x_loss += loss_g_y_x.item()
+        #avg_d_loss = total_d_loss / total_data
+        #avg_g_x_y_loss = total_g_x_y_loss / total_data
+        #avg_g_y_x_loss = total_g_y_x_loss / total_data
         if args.use_wandb:
             if (epoch + 1) % args.image_save_f == 0:
                 matrix_of_img = fake_y.detach()[:10, ...]
@@ -128,24 +128,16 @@ def train(args, device, wandb=None):
                 wandb.log({name: [wandb.Image(matrix_of_img[i])
                                   for i in range(10)]})
                 del matrix_of_img
-            wandb.log({"Avg Discriminator loss": avg_d_loss, 'epoch': epoch + 1})
-            wandb.log(
-                {"Avg Cartoon to Human loss": avg_g_x_y_loss, 'epoch': epoch + 1})
-            wandb.log(
-                {"Avg Human to Cartoon loss": avg_g_y_x_loss, 'epoch': epoch + 1})
-        print("Avg Discriminator Loss: {}".format(avg_d_loss))
-        print("Avg Cartoon to Human Loss: {}".format(avg_g_x_y_loss))
-        print("Avg Human to Cartoon Loss: {}".format(avg_g_y_x_loss))
+            # wandb.log({"Avg Discriminator loss": avg_d_loss, 'epoch': epoch + 1})
+            # wandb.log(
+            #     {"Avg Cartoon to Human loss": avg_g_x_y_loss, 'epoch': epoch + 1})
+            # wandb.log(
+            #     {"Avg Human to Cartoon loss": avg_g_y_x_loss, 'epoch': epoch + 1})
+        # print("Avg Discriminator Loss: {}".format(avg_d_loss))
+        # print("Avg Cartoon to Human Loss: {}".format(avg_g_x_y_loss))
+        # print("Avg Human to Cartoon Loss: {}".format(avg_g_y_x_loss))
     if args.use_wandb:
         time = datetime.now()
         torch.save({"d_x": d_x.state_dict(), "d_y": d_y.state_dict(), "g_x_y": g_x_y.state_dict(), "g_y_x": g_y_x.state_dict(), "optimiser_d_x": optimiser_d_x.state_dict(), "optimiser_d_y": optimiser_d_y.state_dict(), "optimiser_g_x_y": optimiser_g_x_y.state_dict(), "optimiser_g_y_x": optimiser_g_y_x.state_dict()},
                    'model{}.pt'.format(time))
         wandb.save('model{}.pt'.format(time))
-        # torch.save(d_x.state_dict(), "d_x.pt")
-        # torch.save(d_y.state_dict(), "d_y.pt")
-        # torch.save(g_x_y.state_dict(), "g_x_y.pt")
-        # torch.save(g_y_x.state_dict(), "g_y_x.pt")
-        # wandb.save("d_x.pt")
-        # wandb.save("d_y.pt")
-        # wandb.save("g_x_y.pt")
-        # wandb.save("g_y_x.pt")
