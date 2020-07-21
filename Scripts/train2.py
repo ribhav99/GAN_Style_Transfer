@@ -56,10 +56,10 @@ def train(args, device, wandb=None):
     g_x_y.train()
     g_y_x.train()
 
-    bufferX = torch.zeros(50, args.cartoon_dimension[1], args.cartoon_dimension[2], args.cartoon_dimension[0]).to(device)
-    bufferY = torch.zeros(50, args.image_dimension[1], args.image_dimension[2], args.image_dimension[0]).to(device)
-    samplesX = torch.zeros(args.batch_size, args.cartoon_dimension[1], args.cartoon_dimension[2], args.cartoon_dimension[0]).to(device)
-    samplesY = torch.zeros(args.batch_size, args.image_dimension[1], args.image_dimension[2], args.image_dimension[0]).to(device)
+    bufferX = torch.zeros(50, args.cartoon_dimensions[1], args.cartoon_dimensions[2], args.cartoon_dimensions[0]).to(device)
+    bufferY = torch.zeros(50, args.image_dimensions[1], args.image_dimensions[2], args.image_dimensions[0]).to(device)
+    samplesX = torch.zeros(args.batch_size, args.cartoon_dimensions[1], args.cartoon_dimensions[2], args.cartoon_dimensions[0]).to(device)
+    samplesY = torch.zeros(args.batch_size, args.image_dimensions[1], args.image_dimensions[2], args.image_dimensions[0]).to(device)
     sampling = args.batch_size//2
     print("Start Training....")
     for epoch in trange(args.num_epochs):
