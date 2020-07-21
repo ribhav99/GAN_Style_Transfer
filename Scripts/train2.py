@@ -56,6 +56,11 @@ def train(args, device, wandb=None):
     g_x_y.train()
     g_y_x.train()
 
+    bufferX = torch.zeros(50).to(device)
+    bufferY = torch.zeros(50).to(device)
+    samplesX = torch.zeros(args.batch_size).to(device)
+    samplesY = torch.zeros(args.batch_size).to(device)
+    sampling = args.batch_size//2
     print("Start Training....")
     for epoch in trange(args.num_epochs):
         total_d_loss = 0.0
@@ -93,8 +98,23 @@ def train(args, device, wandb=None):
     
             fake_x = g_y_x(y)
             fake_y = g_x_y(x)
-            d_x_loss = ((d_x(x) - 1) ** 2).mean() + (d_x(fake_x.detach())**2).mean()
-            d_y_loss = ((d_y(y) - 1) ** 2).mean() + (d_y(fake_y.detach())**2).mean()
+
+            if batch_num == 0:
+                bufferX = fake_x[:50].clone()
+                bufferY = fake_y[:50].clone()
+            
+            perm = torch.randperm(bufferX.size(0))
+            idx = perm[:sampling]
+            samplesX[:sampling] = bufferX[idx]
+            bufferX[idx] = fake_x[sampling:]
+            samplesX[sampling:] = fake_x[:sampling]
+
+            samplesY[:sampling] = bufferY[idx]
+            bufferY[idx] = fake_Y[sampling:]
+            samplesY[sampling:] = fake_Y[:sampling]
+            
+            d_x_loss = ((d_x(x) - 1) ** 2).mean() + (d_x(samplesX.detach())**2).mean() #fake_x
+            d_y_loss = ((d_y(y) - 1) ** 2).mean() + (d_y(samplesY.detach())**2).mean() #fake_y
             d_x_loss.backward()
             d_y_loss.backward()
 
@@ -115,12 +135,12 @@ def train(args, device, wandb=None):
             loss_g_x_y.backward()
             optimiser_g_x_y.step()
             optimiser_g_y_x.step()
-            #total_d_loss += (total_d.item() * 2)
-            #total_g_x_y_loss += loss_g_x_y.item()
-            #total_g_y_x_loss += loss_g_y_x.item()
-        #avg_d_loss = total_d_loss / total_data
-        #avg_g_x_y_loss = total_g_x_y_loss / total_data
-        #avg_g_y_x_loss = total_g_y_x_loss / total_data
+            total_d_loss += d_x_loss.item() + d_y_loss.item()
+            total_g_x_y_loss += loss_g_x_y.item()
+            total_g_y_x_loss += loss_g_y_x.item()
+        avg_d_loss = total_d_loss / total_data
+        avg_g_x_y_loss = total_g_x_y_loss / total_data
+        avg_g_y_x_loss = total_g_y_x_loss / total_data
         if args.use_wandb:
             if (epoch + 1) % args.image_save_f == 0:
                 matrix_of_img = fake_y.detach()[:10, ...]
@@ -128,14 +148,14 @@ def train(args, device, wandb=None):
                 wandb.log({name: [wandb.Image(matrix_of_img[i])
                                   for i in range(10)]})
                 del matrix_of_img
-            # wandb.log({"Avg Discriminator loss": avg_d_loss, 'epoch': epoch + 1})
-            # wandb.log(
-            #     {"Avg Cartoon to Human loss": avg_g_x_y_loss, 'epoch': epoch + 1})
-            # wandb.log(
-            #     {"Avg Human to Cartoon loss": avg_g_y_x_loss, 'epoch': epoch + 1})
-        # print("Avg Discriminator Loss: {}".format(avg_d_loss))
-        # print("Avg Cartoon to Human Loss: {}".format(avg_g_x_y_loss))
-        # print("Avg Human to Cartoon Loss: {}".format(avg_g_y_x_loss))
+            wandb.log({"Avg Discriminator loss": avg_d_loss, 'epoch': epoch + 1})
+            wandb.log(
+                {"Avg Cartoon to Human loss": avg_g_x_y_loss, 'epoch': epoch + 1})
+            wandb.log(
+                {"Avg Human to Cartoon loss": avg_g_y_x_loss, 'epoch': epoch + 1})
+        print("Avg Discriminator Loss: {}".format(avg_d_loss))
+        print("Avg Cartoon to Human Loss: {}".format(avg_g_x_y_loss))
+        print("Avg Human to Cartoon Loss: {}".format(avg_g_y_x_loss))
     if args.use_wandb:
         time = datetime.now()
         torch.save({"d_x": d_x.state_dict(), "d_y": d_y.state_dict(), "g_x_y": g_x_y.state_dict(), "g_y_x": g_y_x.state_dict(), "optimiser_d_x": optimiser_d_x.state_dict(), "optimiser_d_y": optimiser_d_y.state_dict(), "optimiser_g_x_y": optimiser_g_x_y.state_dict(), "optimiser_g_y_x": optimiser_g_y_x.state_dict()},
