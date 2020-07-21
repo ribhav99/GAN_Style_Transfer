@@ -110,8 +110,8 @@ def train(args, device, wandb=None):
             samplesX[sampling:] = fake_x[:sampling]
 
             samplesY[:sampling] = bufferY[idx]
-            bufferY[idx] = fake_Y[sampling:]
-            samplesY[sampling:] = fake_Y[:sampling]
+            bufferY[idx] = fake_y[sampling:]
+            samplesY[sampling:] = fake_y[:sampling]
             
             d_x_loss = ((d_x(x) - 1) ** 2).mean() + (d_x(samplesX.detach())**2).mean() #fake_x
             d_y_loss = ((d_y(y) - 1) ** 2).mean() + (d_y(samplesY.detach())**2).mean() #fake_y
