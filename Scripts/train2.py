@@ -88,7 +88,7 @@ def train(args, device, wandb=None):
 
         for batch_num, data in enumerate(full_data):
 
-            if batch_num == 100000 // args.batch_size:
+            if batch_num == 70000 // args.batch_size:
                 break # last batch might not be full and therefore indexing errors
 
             y, x = data[0].to(device), data[1].to(
