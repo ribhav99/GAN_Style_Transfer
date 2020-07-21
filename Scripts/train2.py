@@ -87,6 +87,10 @@ def train(args, device, wandb=None):
                 optimiser_g_y_x.param_groups[l]['lr'] = gen_lr
 
         for batch_num, data in enumerate(full_data):
+
+            if batch_num == 100000 // args.batch_size:
+                break # last batch might not be full and therefore indexing errors
+
             y, x = data[0].to(device), data[1].to(
                 device)  # x is cartoon, y is human
             total_data += x.shape[0]
