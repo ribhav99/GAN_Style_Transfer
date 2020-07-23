@@ -56,15 +56,16 @@ def train(args, device, wandb=None):
     g_x_y.train()
     g_y_x.train()
 
-    bufferX = torch.zeros(
-        50, args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1]).to(device)
-    bufferY = torch.zeros(
-        50, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1]).to(device)
-    samplesX = torch.zeros(
-        args.batch_size, args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1]).to(device)
-    samplesY = torch.zeros(
-        args.batch_size, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1]).to(device)
-    sampling = args.batch_size//2
+    if args.buffer_train:
+        bufferX = torch.zeros(
+            50, args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1]).to(device)
+        bufferY = torch.zeros(
+            50, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1]).to(device)
+        samplesX = torch.zeros(
+            args.batch_size, args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1]).to(device)
+        samplesY = torch.zeros(
+            args.batch_size, args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1]).to(device)
+        sampling = args.batch_size//2
     print("Start Training....")
     for epoch in trange(args.num_epochs):
         total_d_loss = 0.0
@@ -92,7 +93,7 @@ def train(args, device, wandb=None):
 
         for batch_num, data in enumerate(full_data):
 
-            if batch_num == args.num_train_samples // args.batch_size:
+            if args.buffer_train and batch_num == args.num_train_samples // args.batch_size:
                 break  # last batch might not be full and therefore indexing errors
 
             y, x = data[0].to(device), data[1].to(
@@ -107,24 +108,31 @@ def train(args, device, wandb=None):
             fake_x = g_y_x(y)
             fake_y = g_x_y(x)
 
-            if batch_num == 0:
-                bufferX = fake_x[:50].clone()
-                bufferY = fake_y[:50].clone()
+            if args.buffer_train:
+                if batch_num == 0:
+                    bufferX = fake_x[:50].clone()
+                    bufferY = fake_y[:50].clone()
 
-            perm = torch.randperm(bufferX.size(0))
-            idx = perm[:sampling]
-            samplesX[:sampling] = bufferX[idx]
-            bufferX[idx] = fake_x[sampling:]
-            samplesX[sampling:] = fake_x[:sampling]
+                perm = torch.randperm(bufferX.size(0))
+                idx = perm[:sampling]
+                samplesX[:sampling] = bufferX[idx]
+                bufferX[idx] = fake_x[sampling:]
+                samplesX[sampling:] = fake_x[:sampling]
 
-            samplesY[:sampling] = bufferY[idx]
-            bufferY[idx] = fake_y[sampling:]
-            samplesY[sampling:] = fake_y[:sampling]
+                samplesY[:sampling] = bufferY[idx]
+                bufferY[idx] = fake_y[sampling:]
+                samplesY[sampling:] = fake_y[:sampling]
 
-            d_x_loss = ((d_x(x) - 1) ** 2).mean() + \
-                (d_x(samplesX.detach())**2).mean()  # fake_x
-            d_y_loss = ((d_y(y) - 1) ** 2).mean() + \
-                (d_y(samplesY.detach())**2).mean()  # fake_y
+                d_x_loss = ((d_x(x) - 1) ** 2).mean() + \
+                    (d_x(samplesX.detach())**2).mean()  # fake_x
+                d_y_loss = ((d_y(y) - 1) ** 2).mean() + \
+                    (d_y(samplesY.detach())**2).mean()  # fake_y
+
+            else:
+                d_x_loss = ((d_x(x) - 1) ** 2).mean() + \
+                    (d_x(fake_x.detach())**2).mean()
+                d_y_loss = ((d_y(y) - 1) ** 2).mean() + \
+                    (d_y(fake_y.detach())**2).mean()
             d_x_loss.backward()
             d_y_loss.backward()
 
