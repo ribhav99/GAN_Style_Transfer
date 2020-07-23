@@ -47,8 +47,8 @@ def get_up_conv_block(input_channel, output_channel, kersize ,act_fn, norm_type,
 # layer.append(nn.ConvTranspose2d(input_channel, output_channel,kernel_size =kersize, stride = 2, padding = to_pad))
     if tonorm:
         layer.append(get_norm(output_channel, norm_type))
-    if dropout:
-        layer.append(nn.Dropout(0.5))
+    if dropout is True:
+        layer.append(nn.Dropout(0.3))
     layer.append(act_fn_module[act_fn])
     return layer
 
@@ -60,7 +60,7 @@ def gen_downconv(channel_list, act_fn, norm_type):
         layer += get_down_conv_block(input_channel,output_channel,4,act_fn,norm_type)
     return layer
 
-def gen_upconv(channel_list, act_fn, norm_type, last_act_fn = 'tanh'):
+def gen_upconv(channel_list, act_fn, norm_type, last_act_fn = 'tanh', dropout = False):
     channel_list.reverse()
     layer = []
     for i in range(len(channel_list) - 1):
@@ -68,7 +68,7 @@ def gen_upconv(channel_list, act_fn, norm_type, last_act_fn = 'tanh'):
         target_channel = channel_list[i+1]
         if i == (len(channel_list) - 2):
             act_fn = last_act_fn
-        layer += get_up_conv_block(prev_channel,target_channel,4,act_fn,norm_type)
+        layer += get_up_conv_block(prev_channel,target_channel,4,act_fn,norm_type, dropout = dropout)
     return layer
 
 def get_res_block(in_channel, norm_type, dropout):

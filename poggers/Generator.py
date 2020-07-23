@@ -13,9 +13,10 @@ class Generator(nn.Module):
         model = gen_downconv(channel_list, act_fn,norm_type)
         for i in range(num_res):
             model += [ResidualBlock(256, norm_type)]
-        model += gen_upconv(channel_list,act_fn,norm_type)
+        model += gen_upconv(channel_list,act_fn,norm_type, dropout = True)
         self.go = nn.Sequential(*model)
     def forward(self, x):
         x = self.go(x)
         return x
+
 
