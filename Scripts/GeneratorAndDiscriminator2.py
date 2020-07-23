@@ -86,8 +86,10 @@ class Generator(nn.Module):
 
     def get_up_conv_block(self, input_channel, output_channel, args, act_fn, dropout=False):
         layer = []
-        layer.append(nn.ConvTranspose2d(input_channel, output_channel,
-                                        kernel_size=args.kernel_size, stride=2, padding=args.padding))
+        layer += [nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False), nn.ReflectionPad2d(
+            args.padding), nn.Conv2d(input_channel, output_channel, kernel_size=3, stride=1, padding=0)]
+        # layer.append(nn.ConvTranspose2d(input_channel, output_channel,
+        # kernel_size=args.kernel_size, stride=2, padding=args.padding))
 
         layer.append(args.norm(output_channel))
         if dropout:
