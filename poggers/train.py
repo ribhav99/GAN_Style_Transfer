@@ -29,9 +29,16 @@ def train(args, wandb = None):
         total_loss = (loss_real + loss_fake) *0.5
         total_loss.backward()
         return total_loss
+
     def cycle_loss(real, reconstructed):
         loss = (torch.abs(real - reconstructed)).mean()
         return args.lambda_cycle * loss 
+
+    def linear_decay(optimizer, n_iter):
+        if n_iter >= 100:
+            for param_group in optimizer.param_groups:
+                param_group['lr'] -= 2e-06
+
     def set_grad(nets, req_grad):
         for net in nets:
             for param in net.parameters():
@@ -47,6 +54,8 @@ def train(args, wandb = None):
         total_g_x_y_loss = 0.0
         total_g_y_x_loss = 0.0
         total_data = 0
+        linear_decay(optimiser_g,epoch)
+        linear_decay(optimiser_d,epoch)
         for batch_num, data in enumerate(full_data):
             y , x = data[0].to(device), data[1].to(device) # x is cartoon, y is human
             total_data += x.shape[0]
