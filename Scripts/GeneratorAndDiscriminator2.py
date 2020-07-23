@@ -146,16 +146,16 @@ if __name__ == '__main__':
     args_dict = {
         'dis_learning_rate': 0.0002,
         'gen_learning_rate': 0.0002,
-        'image_dimensions': (128, 128, 1),
-        'cartoon_dimensions': (128, 128, 1),
+        'image_dimensions': (128, 128, 3),
+        'cartoon_dimensions': (128, 128, 3),
         'batch_size': 100,
         'max_pool': (2, 2),
         'num_epochs': 50,
         'kernel_size': 4,
         'padding': 1,  # (kernel_size - 1) //2
         # first entry must match last entry of cartoon dim
-        'gen_channels': [1, 32, 64, 128, 256],
-        'dis_channels': [1, 32, 64, 128, 256],
+        'gen_channels': [3, 32, 64, 128, 256],  # starts 3 for coloured
+        'dis_channels': [3, 32, 64, 128, 256],
         'num_residual_layers': 6,
         'image_save_f': 1,
         'discrim_train_f': 1,
