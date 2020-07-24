@@ -201,3 +201,5 @@ smart-field-72 --^ --saved model 200 epochs (50 more) with decay
 glamorous-oath-90 --new dataset
 
 NOW USING UPSAMPLING AND REFLECTION PADDING
+silvery-sea-91 --new dataset
+stellar-spaceship-92 --faces dataset but not saved...
