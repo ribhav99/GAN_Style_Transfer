@@ -109,7 +109,7 @@ def train(args, device, wandb=None):
             fake_y = g_x_y(x)
 
             if args.buffer_train:
-                if batch_num == 0:
+                if batch_num == 0 and epoch == 0:
                     bufferX = fake_x[:50].clone()
                     bufferY = fake_y[:50].clone()
 
