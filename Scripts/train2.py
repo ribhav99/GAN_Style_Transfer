@@ -75,9 +75,9 @@ def train(args, device, wandb=None):
 
         if args.decay:
             dis_lr = args.dis_learning_rate - \
-                ((args.dis_learning_rate / 100) * (epoch + 50))
+                ((args.dis_learning_rate / 100) * (epoch))  # + 50))
             gen_lr = args.gen_learning_rate - \
-                ((args.gen_learning_rate / 100) * (epoch + 50))
+                ((args.gen_learning_rate / 100) * (epoch))  # + 50))
 
             for l in range(len(optimiser_d_x.param_groups)):
                 optimiser_d_x.param_groups[l]['lr'] = dis_lr
