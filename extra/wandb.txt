@@ -205,3 +205,4 @@ silvery-sea-91 --new dataset
 stellar-spaceship-92 --faces dataset but not saved...
 royal-night-94 same as above saved 40 epochs
 elated-vortex-95 saved for 80 epochs
+stoic-lion-96 saved 100 epochs
