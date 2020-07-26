@@ -148,8 +148,10 @@ class Discriminator(nn.Module):
         return layer
 
     def initialise_weights(self):
-        for m in self.modules():
-            nn.init.normal_(m, 0, 0.02)
+        # for m in self.modules():
+        #     print(m.state_dict().keys())
+        #nn.init.normal_(m, 0, 0.02)
+        print(self.state_dict().keys())
 
 
 if __name__ == '__main__':
@@ -193,12 +195,14 @@ if __name__ == '__main__':
     x = torch.rand(args.batch_size,
                    args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
-    disciminator = Discriminator(args)
-    x = disciminator(x)
+    discriminator = Discriminator(args)
+    discriminator.initialise_weights()
+    x = discriminator(x)
     print(x.shape)
 
     y = torch.rand(args.batch_size,
                    args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
     generator = Generator(args)
+    # generator.initialise_weights()
     y = generator(y)
     print(y.shape)
