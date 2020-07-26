@@ -45,6 +45,7 @@ class Generator(nn.Module):
         model += self.gen_upconv(args)
 
         self.go = nn.Sequential(*model)
+        # self.initialise_weights()
 
     def forward(self, x):
         return self.go(x)
@@ -100,6 +101,10 @@ class Generator(nn.Module):
             layer.append(args.activation())
         return layer
 
+    def initialise_weights(self):
+        for m in self.modules():
+            nn.init.normal_(m, 0, 0.02)
+
 
 class Discriminator(nn.Module):
 
@@ -117,6 +122,7 @@ class Discriminator(nn.Module):
         self._linear_dim = np.prod(self.conv(fake_data)[0].shape)
         self.linear = nn.Sequential(
             nn.Linear(self._linear_dim, 1), nn.Sigmoid())
+        # self.initialise_weights()
 
     def forward(self, x):
         x = self.conv(x)
@@ -140,6 +146,10 @@ class Discriminator(nn.Module):
             layer += self.get_down_conv_block(input_channel,
                                               output_channel, args)
         return layer
+
+    def initialise_weights(self):
+        for m in self.modules():
+            nn.init.normal_(m, 0, 0.02)
 
 
 if __name__ == '__main__':

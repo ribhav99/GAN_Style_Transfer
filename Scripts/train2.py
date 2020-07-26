@@ -124,23 +124,22 @@ def train(args, device, wandb=None):
                 samplesY[sampling:] = fake_y[:sampling]
 
                 d_x_loss = ((d_x(x) - 1) ** 2).mean() + \
-                    (d_x(samplesX.detach())**2).mean()  # fake_x
+                    (d_x(samplesX.detach())**2).mean()
                 d_y_loss = ((d_y(y) - 1) ** 2).mean() + \
-                    (d_y(samplesY.detach())**2).mean()  # fake_y
+                    (d_y(samplesY.detach())**2).mean()
 
             else:
                 d_x_loss = ((d_x(x) - 1) ** 2).mean() + \
                     (d_x(fake_x.detach())**2).mean()
                 d_y_loss = ((d_y(y) - 1) ** 2).mean() + \
                     (d_y(fake_y.detach())**2).mean()
+
+                d_x_loss /= 2
+                d_y_loss /= 2
+
             d_x_loss.backward()
             d_y_loss.backward()
 
-            # d_loss_real = ((d_x(x) - 1) ** 2).mean() + ((d_y(y) - 1)**2).mean()
-            # d_loss_fake = (d_y(fake_y.detach())**2).mean() + \
-            #     (d_x(fake_x.detach())**2).mean()
-            # total_d = d_loss_real + d_loss_fake # sum was divided by 2
-            # total_d.backward()
             optimiser_d_x.step()
             optimiser_d_y.step()
 
