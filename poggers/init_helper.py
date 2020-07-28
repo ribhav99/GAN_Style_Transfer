@@ -31,10 +31,16 @@ def get_norm(channel,norm_type):
         f = nn.Identity()
     return f
 
+def custom_conv(input_channel, output_channel, kersize, stride_in, pad):
+    net = nn.Conv2d(input_channel, output_channel, kernel_size = kersize, stride = stride_in, padding = pad)
+    nn.init.normal_(net.weight, mean = 0, std = 0.02)
+    return net
+
 def get_down_conv_block(input_channel, output_channel, kersize ,act_fn, norm_type, tonorm = True, stride = 2):
     layer = []
     to_pad = (kersize - 1)//2
-    layer.append(nn.Conv2d(input_channel, output_channel,kernel_size =kersize, stride = stride, padding = to_pad))
+    # layer.append(nn.Conv2d(input_channel, output_channel, kernel_size =kersize, stride = stride, padding = to_pad))
+    layer.append(custom_conv(input_channel, output_channel, kersize, stride, to_pad))
     if tonorm:
         layer.append(get_norm(output_channel, norm_type))
     layer.append(act_fn_module[act_fn])
@@ -43,7 +49,8 @@ def get_down_conv_block(input_channel, output_channel, kersize ,act_fn, norm_typ
 def get_up_conv_block(input_channel, output_channel, kersize ,act_fn, norm_type, tonorm = True, dropout = False):
     layer = []
     to_pad = (kersize - 1)//2
-    layer += [nn.Upsample(scale_factor=2,mode='bilinear', align_corners = False), nn.ReflectionPad2d(1), nn.Conv2d(input_channel,output_channel,kernel_size=3,stride=1,padding=0)]
+    layer += [nn.Upsample(scale_factor=2,mode='bilinear', align_corners = False), nn.ReflectionPad2d(1)]
+    layer += [custom_conv(input_channel, output_channel, 3, 1, 0)]
 # layer.append(nn.ConvTranspose2d(input_channel, output_channel,kernel_size =kersize, stride = 2, padding = to_pad))
     if tonorm:
         layer.append(get_norm(output_channel, norm_type))
