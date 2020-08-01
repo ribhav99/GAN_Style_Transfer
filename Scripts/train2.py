@@ -73,7 +73,7 @@ def train(args, device, wandb=None):
         total_g_y_x_loss = 0.0
         total_data = 0
 
-        if args.decay and False:
+        if args.decay:
             dis_lr = args.dis_learning_rate - \
                 ((args.dis_learning_rate / 100) * (epoch + 40))
             gen_lr = args.gen_learning_rate - \
