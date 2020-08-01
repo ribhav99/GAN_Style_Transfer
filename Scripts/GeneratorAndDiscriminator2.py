@@ -9,8 +9,8 @@ def get_res_block(args):
     in_channel = args.gen_channels[-1]
     layer = []
     layer.append(nn.Conv2d(in_channel, in_channel, 3, padding=1))
-    layer.append(args.activation())
     layer.append(args.norm(in_channel))
+    layer.append(args.activation())
     if args.dropout:
         layer.append(nn.Dropout(0.5))
     return layer
@@ -54,8 +54,8 @@ class Generator(nn.Module):
         layer = []
         layer.append(nn.Conv2d(input_channel, output_channel,
                                kernel_size=args.kernel_size, stride=stride, padding=args.padding))
-        layer.append(args.activation())
         layer.append(args.norm(output_channel))
+        layer.append(args.activation())
         return layer
 
     def gen_downconv(self, args):
@@ -113,6 +113,7 @@ class Discriminator(nn.Module):
         conv_layers = self.dis_downconv(args)
         conv_layers.append(nn.Conv2d(args.dis_channels[-1], 1,
                                      kernel_size=1, stride=1, padding=0))
+        conv_layers.append(args.norm(1))
         conv_layers.append(args.activation())
         self.conv = nn.Sequential(*conv_layers)
 
@@ -196,13 +197,11 @@ if __name__ == '__main__':
                    args.image_dimensions[2], args.image_dimensions[0], args.image_dimensions[1])
 
     discriminator = Discriminator(args)
-    discriminator.initialise_weights()
     x = discriminator(x)
     print(x.shape)
 
     y = torch.rand(args.batch_size,
                    args.cartoon_dimensions[2], args.cartoon_dimensions[0], args.cartoon_dimensions[1])
     generator = Generator(args)
-    # generator.initialise_weights()
     y = generator(y)
     print(y.shape)
