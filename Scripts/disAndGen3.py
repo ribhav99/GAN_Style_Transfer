@@ -6,11 +6,11 @@ import numpy as np
 
 
 def get_res_block(args):
-    in_channel = args.gen_channels[-1]
+    in_channel = 256
     layer = []
     layer.append(nn.Conv2d(in_channel, in_channel, 3, padding=1))
-    layer.append(args.activation())
     layer.append(args.norm(in_channel))
+    layer.append(args.activation())
     if args.dropout:
         layer.append(nn.Dropout(0.5))
     return layer
@@ -37,6 +37,25 @@ class Generator(nn.Module):
     def __init__(self, args):
         super().__init__()
 
+        model = []
+        model.append(nn.Conv2d(1, 64,
+                               kernel_size=7, stride=1))
+        model.append(args.norm(64))
+        model.append(args.activation())
+
+        model.append(nn.ReflectionPad2d(args.padding))
+
+        model.append(nn.Conv2d(64, 128,
+                               kernel_size=3, stride=2))
+        model.append(args.norm(128))
+        model.append(args.activation())
+        model.append(nn.ReflectionPad2d(args.padding))
+
+        model.append(nn.Conv2d(128, 256,
+                               kernel_size=3, stride=2))
+        model.append(args.norm(256))
+        model.append(args.activation())
+
         model = self.gen_downconv(args)
 
         for i in range(args.num_residual_layers):
@@ -54,8 +73,8 @@ class Generator(nn.Module):
         layer = []
         layer.append(nn.Conv2d(input_channel, output_channel,
                                kernel_size=args.kernel_size, stride=stride, padding=args.padding))
-        layer.append(args.activation())
         layer.append(args.norm(output_channel))
+        layer.append(args.activation())
         return layer
 
     def gen_downconv(self, args):
