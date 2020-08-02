@@ -6,8 +6,6 @@ from Discriminator import Discriminator
 from dataloader import get_data_loader
 from tqdm import tqdm, trange
 from datetime import datetime
-from preprocess import make_human_text_file, make_cartoon_text_file
-from train_test_split import split_human_data, split_cartoon_data
 
 
 def train(args, device, wandb=None):
