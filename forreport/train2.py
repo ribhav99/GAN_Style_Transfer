@@ -11,14 +11,6 @@ from train_test_split import split_human_data, split_cartoon_data
 
 
 def train(args, device, wandb=None):
-
-    # PREPROCESS DATA
-    # make_human_text_file(args)
-    # make_cartoon_text_file(args)
-    # split_human_data(args)
-    # split_cartoon_data(args)
-
-    # LOAD DATA .......
     full_data = get_data_loader(args, train=True)
 
     d_x = Discriminator(args).to(device)  # x is cartoon
@@ -42,11 +34,6 @@ def train(args, device, wandb=None):
         optimiser_g_x_y.load_state_dict(models['optimiser_g_x_y'])
         optimiser_g_y_x.load_state_dict(models['optimiser_g_y_x'])
         print("Successfully Loaded Models...")
-    if args.use_wandb:
-        wandb.watch(d_x, log='all')
-        wandb.watch(d_y, log='all')
-        wandb.watch(g_x_y, log='all')
-        wandb.watch(g_y_x, log='all')
 
     def cycle_loss(real, reconstructed):
         loss = (torch.abs(real - reconstructed)).mean()
@@ -159,27 +146,10 @@ def train(args, device, wandb=None):
         avg_d_loss = total_d_loss / total_data
         avg_g_x_y_loss = total_g_x_y_loss / total_data
         avg_g_y_x_loss = total_g_y_x_loss / total_data
-        if args.use_wandb:
-            if (epoch + 1) % args.image_save_f == 0:
-                matrix_of_img = fake_y.detach()[:10, ...]
-                name = "examples " + "epoch " + str(epoch + 1)
-                wandb.log({name: [wandb.Image(matrix_of_img[i])
-                                  for i in range(10)]})
-                del matrix_of_img
-            wandb.log({"Avg Discriminator loss": avg_d_loss, 'epoch': epoch + 1})
-            wandb.log(
-                {"Avg Cartoon to Human loss": avg_g_x_y_loss, 'epoch': epoch + 1})
-            wandb.log(
-                {"Avg Human to Cartoon loss": avg_g_y_x_loss, 'epoch': epoch + 1})
         print("Avg Discriminator Loss: {}".format(avg_d_loss))
         print("Avg Cartoon to Human Loss: {}".format(avg_g_x_y_loss))
         print("Avg Human to Cartoon Loss: {}".format(avg_g_y_x_loss))
-    if args.use_wandb:
-        time = datetime.now()
-        torch.save({"d_x": d_x.state_dict(), "d_y": d_y.state_dict(), "g_x_y": g_x_y.state_dict(), "g_y_x": g_y_x.state_dict(), "optimiser_d_x": optimiser_d_x.state_dict(
-        ), "optimiser_d_y": optimiser_d_y.state_dict(), "optimiser_g_x_y": optimiser_g_x_y.state_dict(), "optimiser_g_y_x": optimiser_g_y_x.state_dict()}, 'model{}.pt'.format(time))
-        wandb.save('model{}.pt'.format(time))
-    else:
-        time = datetime.now()
-        torch.save({"d_x": d_x.state_dict(), "d_y": d_y.state_dict(), "g_x_y": g_x_y.state_dict(), "g_y_x": g_y_x.state_dict(), "optimiser_d_x": optimiser_d_x.state_dict(), "optimiser_d_y": optimiser_d_y.state_dict(), "optimiser_g_x_y": optimiser_g_x_y.state_dict(), "optimiser_g_y_x": optimiser_g_y_x.state_dict()},
-                   'args.save_path/' + 'model{}.pt'.format(time))
+
+    time = datetime.now()
+    torch.save({"d_x": d_x.state_dict(), "d_y": d_y.state_dict(), "g_x_y": g_x_y.state_dict(), "g_y_x": g_y_x.state_dict(), "optimiser_d_x": optimiser_d_x.state_dict(), "optimiser_d_y": optimiser_d_y.state_dict(), "optimiser_g_x_y": optimiser_g_x_y.state_dict(), "optimiser_g_y_x": optimiser_g_y_x.state_dict()},
+               'args.save_path/' + 'model{}.pt'.format(time))
