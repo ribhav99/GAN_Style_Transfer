@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from GeneratorAndDiscriminator2 import Generator, Discriminator
-#from disAndGen3 import Generator, Discriminator
+from Generator import Generator
+from Discriminator import Discriminator
 from dataloader import get_data_loader
 from tqdm import tqdm, trange
 from datetime import datetime
